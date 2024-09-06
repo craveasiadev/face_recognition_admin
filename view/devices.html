@@ -238,9 +238,10 @@
         </div>
       </nav>
       <div class="content">
-        <div id="alert-container" style="display: none;"></div>
+        
+        <div id="alert-container"></div>
         <div class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis pt-7 border-y">
-          <div id="device-list-container" data-list='{"valueNames":["serial", "name", "state", "ip", "direction", "last", "person", "area", "created"],"page":6,"pagination":true,"filter":{"key":"area"}}'>
+          <div id="device-list-container" data-list='{"valueNames":["serial", "name", "state", "ip", "direction", "last", "person", "area", "created"],"page":7,"pagination":true,"filter":{"key":"area"}}'>
             <div class="row align-items-end justify-content-between pb-5 g-3">
               <div class="col-auto">
                 <h4>Devices</h4>
@@ -361,15 +362,11 @@
             </table>
             
             </div>
-            <div class="row align-items-center py-1">
-              <div class="pagination d-none"></div>
-              <div class="col d-flex fs-9">
-                <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info"></p><a class="fw-semibold" href="#!" data-list-view="*">View all<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a><a class="fw-semibold d-none" href="#!" data-list-view="less">View Less</a>
-              </div>
-              <div class="col-auto d-flex">
-
-                <button class="btn btn-link px-1 me-1" type="button" title="Previous" data-list-pagination="prev"><span class="fas fa-chevron-left me-2"></span>Previous</button>
-                <button class="btn btn-link px-1 ms-1" type="button" title="Next" data-list-pagination="next">Next<span class="fas fa-chevron-right ms-2"></span></button>
+            <div class="d-flex justify-content-between mt-3 mb-5"><span class="d-none d-sm-inline-block" data-list-info="data-list-info"></span>
+              <div class="d-flex">
+                <button class="page-link" data-list-pagination="prev"><span class="fas fa-chevron-left"></span></button>
+                <ul class="mb-0 pagination"></ul>
+                <button class="page-link pe-0" data-list-pagination="next"><span class="fas fa-chevron-right"></span></button>
               </div>
             </div>
           </div>

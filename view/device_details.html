@@ -239,6 +239,12 @@
       </nav>
       <div class="content">
         
+        <div class="alert alert-subtle-success alert-dismissible fade show" id="successAlert" style="display: none;" role="alert">
+          <strong>Edit Successfully!</strong>
+
+          <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      
         <div class="mb-9">
           <h3 class="mb-6">Device Details</h3>
           <div class="card p-5">
@@ -307,6 +313,7 @@
         </div>
         
       </div>
+      <video id="qr-video" style="display:none;"></video>
       
     </main>
     <!-- ===============================================-->
@@ -455,6 +462,7 @@
 
     <!-- RENDER -->
     <script src="../render/device_details_renderer.js"></script>
+    <script src="../render/qrRenderer.js"></script>
     <script>
       document.getElementById('refreshButton').addEventListener('click', () => {
           // Refresh the page

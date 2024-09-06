@@ -1,23 +1,33 @@
 
 //Add Device
-document.getElementById("deviceForm").addEventListener('submit', async (event) => {
-    event.preventDefault();
+document.addEventListener('DOMContentLoaded', async () => {
+    document.getElementById("deviceForm").addEventListener('submit', async (event) => {
 
-    const device_ip = document.getElementById("ip_address").value;
-    const device_key = document.getElementById("device_key").value;
-    const device_name = document.getElementById("device_name").value;
-    const device_area = document.getElementById("device_area").value;
-    const password = document.getElementById("password").value;
-    const device_entry = document.getElementById("device_entry").value;
-
-    try {
-        await window.api.insertDevice(device_ip, device_key, device_name, device_area, password, device_entry);
-        console.log("Device area inserted successfully.");
-        // Optionally refresh the table or provide feedback to the user
-    } catch (err) {
-        console.error('Failed to insert device area:', err);
-    }
-})
+        event.preventDefault();
+        const device_ip = document.getElementById("ip_address").value;
+        const device_key = document.getElementById("device_key").value;
+        const device_name = document.getElementById("device_name").value;
+        const device_area = document.getElementById("device_area").value;
+        const password = document.getElementById("password").value;
+        const device_entry = document.getElementById("device_entry").value;
+    
+        try {
+            await window.api.insertDevice(device_ip, device_key, device_name, device_area, password, device_entry);
+            console.log("Device area inserted successfully.");
+            showAlert("Added Device Successfully", "success")
+            const modalElement = document.getElementById('verticallyCentered');
+            if (modalElement) {
+                const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+                modal.hide();
+            }
+            refreshTable();
+            // Optionally refresh the table or provide feedback to the user
+        } catch (err) {
+            console.error('Failed to insert device area:', err);
+        }
+    })
+    
+});
 
 //Get Device Area
 document.addEventListener('DOMContentLoaded', async () => {
@@ -35,7 +45,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (err) {
         console.error('Failed to load device areas:', err);
     }
+    
 });
+
+
 
 //Filter
 document.addEventListener('DOMContentLoaded', async () => {
@@ -236,13 +249,16 @@ document.addEventListener('click', async (event) => {
 
 //Delete Device
 document.addEventListener('click', async (event) => {
+    console.log('Click event detected:', event.target);
     if (event.target && event.target.id === 'deleteDevice') {
-        const deviceId = event.target.closest('tr').querySelector('#deviceId').value;
+        const row = event.target.closest('tr');
+        const deviceId = row.querySelector('.view-device').getAttribute('data-device-id');
         
         try {
             await window.api.deleteDevice(deviceId);
             console.log("Deleted device successfully");
             showAlert("Deleted Device Successfully", "success")
+            refreshTable();
             // Optionally refresh the device list or remove the row from the table
         } catch (error) {
             showAlert("Failed to delete device", "danger")
@@ -270,4 +286,50 @@ function showAlert(message, type) {
     setTimeout(() => {
         alertContainer.style.display = 'none';
     }, 3000);
+}
+
+async function refreshTable() {
+    const deviceTable = document.getElementById('table-latest-review-body');
+    
+    try {
+        const devices = await window.api.getDevice();
+        deviceTable.innerHTML = devices.map(device => `
+            <tr class="">
+                <td class="fs-9 align-middle text-center">
+                    <div class="form-check mb-0 fs-8 text-center">
+                        <input class="form-check-input" type="checkbox" />
+                    </div>
+                </td>
+                <td class="align-middle serial border-end border-translucent">${device.device_key}</td>
+                <td class="align-middle name border-end border-translucent">${device.device_name}</td>
+                <td class="align-middle state border-end border-translucent">
+                    <span class="badge badge-phoenix fs-10 badge-phoenix-danger">
+                        <span class="badge-label">Offline</span>
+                        <span class="ms-1" data-feather="x" style="height:12.8px;width:12.8px;"></span>
+                    </span>
+                </td>
+                <td class="align-middle ip border-end border-translucent">${device.device_ip}</td>
+                <td class="align-middle direction border-end border-translucent">${device.device_entry}</td>
+                <td class="align-middle person border-end border-translucent">0</td>
+                <td class="align-middle area border-end border-translucent">${device.area_name}</td>
+                <td class="align-middle created border-end border-translucent">${new Date(device.created_at).toLocaleString()}</td>
+                <td class="align-middle white-space-nowrap text-center">
+                    <div class="btn-reveal-trigger position-static">
+                        <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h fs-10"></span></button>
+                        <div class="dropdown-menu dropdown-menu-end py-2">
+                            <a class="dropdown-item open-door" href="#!" data-device-ip="${device.device_ip}" data-device-pass="${device.communication_password}"><i class="fa-solid fa-lock-open"></i> Open the door</a>
+                            <a class="dropdown-item restart-device" href="#!" data-device-ip="${device.device_ip}" data-device-pass="${device.communication_password}"><i class="fa-solid fa-power-off"></i> Restart</a>
+                            <a class="dropdown-item view-device" href="#!" data-device-id="${device.id}"><i class="fa-solid fa-eye"></i> View</a>
+                            <div class="dropdown-divider"></div>
+                            <button type="button" id="deleteDevice" class="dropdown-item text-danger"><i class="fa-solid fa-trash"></i> Remove</button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    } catch (err) {
+        console.error('Failed to refresh the table:', err);
+    }
+
+    
 }

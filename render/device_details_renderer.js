@@ -79,7 +79,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
           document.getElementById("edit-device-details").addEventListener('submit', async (event) => {
             event.preventDefault();
-          
             const device_id = document.getElementById("device_id").value;
             const device_ip = document.getElementById("ip").value;
             const device_key = document.getElementById("serial").value;
@@ -90,11 +89,21 @@ document.addEventListener('DOMContentLoaded', async () => {
             try {
                 await window.api.updateDevice(device_id, device_ip, device_key, device_name, device_area, device_entry);
                 console.log("Device area inserted successfully.");
+                // Add ?success to the current URL without refreshing the page
+                const newUrl = `${window.location.pathname}?deviceId=${device_id}&success=1`;
+                window.history.replaceState(null, null, newUrl);
                 // Optionally refresh the table or provide feedback to the user
             } catch (err) {
                 console.error('Failed to insert device area:', err);
             }
-          })
+          });
+
+          const urlParams = new URLSearchParams(window.location.search);
+          const successAlert = document.getElementById("successAlert");
+        
+          if (urlParams.has('success')) {
+            successAlert.style.display = "block";
+          }
 
           // Now fetch additional details
           const apiUrl = `http://${device.device_ip}:8090/cgi-bin/js/device/get`;
@@ -213,3 +222,5 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.error('No device ID found in query parameters');
   }
 });
+
+

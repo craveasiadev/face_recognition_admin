@@ -1,0 +1,12 @@
+{
+    "watch": [
+      "controller/**/*.js",
+      "view/**/*.html",
+      "render/**/*.js"
+    ],
+    "ignore": [
+      "models/data.db"
+    ],
+    "exec": "electron ./controller/index.js"
+  }
+  
