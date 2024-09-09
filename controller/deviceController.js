@@ -131,3 +131,21 @@ ipcMain.handle('update-device', (event, updatedDevice) => {
         });
     });
 });
+
+ipcMain.handle('update-device-pass', (event, updatedPass) => {
+    const { deviceId, newPass } = updatedPass;
+    
+    return new Promise((resolve, reject) => {
+        db.run(`
+            UPDATE device
+            SET communication_password = ?
+            WHERE id = ?
+        `, [newPass, deviceId], function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve({ success: true, changes: this.changes });
+            }
+        });
+    });
+});

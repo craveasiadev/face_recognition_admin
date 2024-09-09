@@ -84,6 +84,12 @@
                   </a>
                 </div>
                 <!-- parent pages-->
+                <div class="nav-item-wrapper"><a class="nav-link" href="qrTest.html" role="button" data-bs-toggle="" aria-expanded="false">
+                  <div class="d-flex align-items-center"><span class="nav-link-icon"><i class="fa-solid fa-qrcode"></i></span><span class="nav-link-text-wrapper"><span class="nav-link-text">QR Test</span></span>
+                  </div>
+                </a>
+              </div>
+                <!-- parent pages-->
                 <div class="nav-item-wrapper"><a class="nav-link dropdown-indicator label-1" href="#personnelManagement" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="personnelManagement">
                     <div class="d-flex align-items-center">
                       <div class="dropdown-indicator-icon-wrapper"><span class="fas fa-caret-right dropdown-indicator-icon"></span></div><span class="nav-link-icon"><span data-feather="user"></span></span><span class="nav-link-text">Personnel Management</span>
@@ -245,12 +251,13 @@
         </div>
       </nav>
       <div class="content">
+        <div id="alert-container"></div>
         <div class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis pt-7 border-y">
           <div data-list='{"valueNames":["product","customer","rating","review","time"],"page":6}'>
             <div class="row align-items-end justify-content-between pb-5 g-3">
               <div class="col-auto">
                 <h4>Employee Management</h4>
-                <p class="text-body-tertiary lh-sm mb-0">Payment received across all channels</p>
+                <p class="text-body-tertiary lh-sm mb-0"></p>
               </div>
               <div class="col-12 col-md-auto">
                 <div class="row g-2 gy-3">
@@ -332,17 +339,37 @@
                                   <hr>
                                   <div class="col-md-6">
                                     <div class="form-floating">
+                                      <input class="form-control" type="text" name="sn" id="sn" placeholder="User ID/SN" />
+                                      <label for="add-property-wizardwizard-name">User ID/SN (cannot be duplicated)</label>
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="form-floating">
                                       <input class="form-control" type="text" name="card" id="card" placeholder="Card Number" />
                                       <label for="add-property-wizardwizard-name">Card Number</label>
                                     </div>
                                   </div>
                                   <div class="col-md-6">
                                     <div class="form-floating">
-                                      <input class="form-control" type="text" name="id_num" id="id_num" placeholder="ID Number" />
-                                      <label for="add-property-wizardwizard-name">ID Number</label>
+                                      <input class="form-control" type="text" name="id_card" id="id_card" placeholder="ID Card" />
+                                      <label for="add-property-wizardwizard-name">ID Card</label>
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="form-floating">
+                                      <select class="form-select" id="device_area" aria-label="Default select example">
+                                        
+                                      </select>
+                                      <label class="form-label" for="device_area">Area to Distribute</label>
+                                    </div>
+                                  </div>
+                                  <div class="col-md-12 text-center">
+                                    <div>
+                                      <button type="submit" class="btn btn-primary">Submit</button>
                                     </div>
                                   </div>
                                 </div>
+
                               </form>
                           </div>
                           
@@ -374,6 +401,10 @@
                 </thead>
                 <tbody class="list" id="table-latest-review-body">
                     <!-- Data will be inserted here by JavaScript -->
+                    <div class="spinner-border text-success" role="status" id="loading-spinner">
+                      <span class="visually-hidden">Loading...</span>
+                    
+                    </div>
                 </tbody>
             </table>
             
@@ -540,7 +571,7 @@
     <script src="../asset/assets/js/ecommerce-dashboard.js"></script>
 
     <!-- RENDER -->
-    <script src="../render/renderer.js"></script>
+    <script src="../render/employee_renderer.js"></script>
     <script>
       document.getElementById('refreshButton').addEventListener('click', () => {
           // Refresh the page

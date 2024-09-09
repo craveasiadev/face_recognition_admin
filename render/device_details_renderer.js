@@ -77,6 +77,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               </form>
           `;
 
+          //edit details function
           document.getElementById("edit-device-details").addEventListener('submit', async (event) => {
             event.preventDefault();
             const device_id = document.getElementById("device_id").value;
@@ -97,6 +98,45 @@ document.addEventListener('DOMContentLoaded', async () => {
                 console.error('Failed to insert device area:', err);
             }
           });
+          
+          //setPassword Function
+          document.getElementById("edit-comm-pass").addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const oldPass = document.getElementById("old_pass").value;
+            const newPass = document.getElementById("new_pass").value;
+            console.log(newPass)
+            try {
+                await window.api.updatePass(deviceId, newPass);
+                console.log("Device password updated successfully.");
+                // Add ?success to the current URL without refreshing the page
+                const newUrl = `${window.location.pathname}?deviceId=${deviceId}&success=1`;
+                window.history.replaceState(null, null, newUrl);
+                window.location.reload();
+                // Optionally refresh the table or provide feedback to the user
+            } catch (err) {
+                console.error('Failed to insert device area:', err);
+            }
+
+            const apiUrl = `http://${device.device_ip}:8090/cgi-bin/js/device/setPwd`;
+            const commPassword = device.communication_password;
+  
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Basic ' + btoa(`admin:${commPassword}`), // Basic auth using device password
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  "oldPwd": oldPass,
+                  "newPwd": newPass
+              })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch additional device details');
+            }
+          })
+
 
           const urlParams = new URLSearchParams(window.location.search);
           const successAlert = document.getElementById("successAlert");
