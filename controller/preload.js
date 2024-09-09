@@ -16,12 +16,13 @@ contextBridge.exposeInMainWorld('api', {
     updatePass: (deviceId, newPass) => ipcRenderer.invoke('update-device-pass', { deviceId, newPass }),
 
     //Insert User
-    insertUser: (name, email, phone, role, image, sn, card, id_card) => ipcRenderer.invoke('insert-user', { name, email, phone, role, image, sn, card, id_card }),
-    
+    insertUser: (name, username, email, phone, role, image, sn, card, id_card) => ipcRenderer.invoke('insert-user', { name, username, email, phone, role, image, sn, card, id_card }),
+    //Delete User
+    deleteUser: (userId) => ipcRenderer.invoke('delete-user', userId),
+
     //User Employee
     getUsersEmployee: () => ipcRenderer.invoke('get-users-employee'),
     
-
     //User Visitor
     getUsersVisitor: () => ipcRenderer.invoke('get-users-visitor'),
 
