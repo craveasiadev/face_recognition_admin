@@ -18,6 +18,7 @@ const createUserTable = () => {
                 order_number TEXT,
                 time_begin TIMESTAMP,
                 time_end TIMESTAMP,
+                area_id INTEGER,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 organization_id INTEGER,

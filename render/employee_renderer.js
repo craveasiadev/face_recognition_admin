@@ -69,13 +69,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 image = fileReader.result; // This will give base64 image data
     
                 // Proceed with the form submission using the base64 data
-                await submitForm(name, username, email, phone, role, image, sn, card, id_card);
+                await submitForm(name, username, email, phone, role, image, sn, card, id_card, area);
             };
     
             fileReader.readAsDataURL(file); // Convert file to base64
         } else {
             // If the user used the camera, `imageInput.value` is already set to base64
-            await submitForm(name, username, email, phone, role, image, sn, card, id_card);
+            await submitForm(name, username, email, phone, role, image, sn, card, id_card, area);
         }
     
         })
@@ -102,7 +102,7 @@ document.addEventListener('click', async (event) => {
 });
 
 // Helper function to submit form data
-async function submitForm(name, username, email, phone, role, image, sn, card, id_card) {
+async function submitForm(name, username, email, phone, role, image, sn, card, id_card, area) {
     try {
         await window.api.insertUser(name, username, email, phone, role, image, sn, card, id_card);
         console.log("User created successfully.");
@@ -113,6 +113,69 @@ async function submitForm(name, username, email, phone, role, image, sn, card, i
             const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
             modal.hide();
         }
+
+        const devices = await window.api.getDeviceByArea(area);
+        console.log("Area ID:", area); // Add this to verify the value passed to the function
+        console.log("Devices fetched:", devices); // Already there
+
+        const payload = {
+            type: 1,
+            sn: sn,
+            name: name,
+            cardNo: card,
+            mobile: phone,
+            acGroupNumber: 0,
+            verifyStyle: 1,
+            expiredStyle: 0,
+            validTimeBegin: Date.now(),
+            validTimeEnd: Date.now() + (1000 * 60 * 60 * 24 * 365) // 1-year expiration
+        };
+
+        let cleanedBase64 = image.substr(image.indexOf('base64,') + 7);
+        console.log(cleanedBase64)
+        const facePayload = {
+            personSn: sn,
+            imgBase64: cleanedBase64,
+        }
+
+        devices.map(async (device) => {
+            const deviceUrl = `http://${device.device_ip}:8090/cgi-bin/js/person/create`;
+            const deviceFaceUrl = `http://${device.device_ip}:8090/cgi-bin/js/face/merge`;
+
+            const response = await fetch(deviceUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Basic ' + btoa('admin:' + device.communication_password)
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const responseFace = await fetch(deviceFaceUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Basic ' + btoa('admin:' + device.communication_password)
+                },
+                body: JSON.stringify(facePayload)
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error(`Error adding user to device ${device.device_ip}:`, errorText);
+                throw new Error(`Error with device ${device.device_ip}`);
+            } else {
+                console.log(`User added to device ${device.device_ip} successfully`);
+            }
+
+            if (!responseFace.ok) {
+                const errorText = await responseFace.text();
+                console.error(`Error adding user face to device ${device.device_ip}:`, errorText);
+                throw new Error(`Error with device ${device.device_ip}`);
+            } else {
+                console.log(`User face added to device ${device.device_ip} successfully`);
+            }
+        });
 
         refreshTable(); // Refresh table after adding use
     } catch (err) {

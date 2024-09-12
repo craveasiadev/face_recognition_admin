@@ -270,7 +270,7 @@
                     </div>
                   </div>
                   <div class="col-auto">
-                    <button class="btn btn-sm btn-phoenix-secondary bg-body-emphasis bg-body-hover me-2" type="button">All products</button>
+                    <button id="refresh-btn" class="btn btn-sm btn-phoenix-secondary bg-body-emphasis bg-body-hover me-2" type="button">Refresh</button>
                     <button class="btn btn-sm btn-phoenix-secondary bg-body-emphasis bg-body-hover action-btn" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h" data-fa-transform="shrink-2"></span></button>
                     <ul class="dropdown-menu dropdown-menu-end">
                       <li><a class="dropdown-item" href="#">Action</a></li>
@@ -290,18 +290,19 @@
                                 <input class="form-check-input" id="checkbox-bulk-reviews-select" type="checkbox" data-bulk-select='{"body":"table-latest-review-body"}' />
                             </div>
                         </th>
-                        <th class="sort white-space-nowrap align-middle" scope="col"></th>
-                        <th class="sort white-space-nowrap align-middle" scope="col" style="min-width:360px;" data-sort="product">NAME</th>
-                        <th class="sort align-middle" scope="col" data-sort="customer" style="min-width:200px;">EMAIL</th>
-                        <th class="sort align-middle" scope="col" data-sort="rating" style="min-width:110px;">PHONE</th>
-                        <th class="sort align-middle" scope="col" style="max-width:350px;" data-sort="review">CREATED</th>
-                        <th class="sort text-end pe-0 align-middle" scope="col"></th>
+                        <th class="sort white-space-nowrap align-middle" scope="col" style="min-width:110px;" data-sort="product">IMAGE</th>
+                        <th class="sort align-middle" scope="col" data-sort="customer" style="min-width:110px;">NAME</th>
+                        <th class="sort align-middle" scope="col" data-sort="rating" style="min-width:110px;">CARD NUMBER</th>
+                        <th class="sort align-middle" scope="col" style="max-width:110px;" data-sort="review">SN</th>
+                        <th class="sort align-middle" scope="col" style="max-width:110px;" data-sort="review">PASS</th>
+                        <th class="sort align-middle" scope="col" style="max-width:110px;" data-sort="review">IDENTITY</th>
+                        <th class="sort align-middle" scope="col" style="max-width:110px;" data-sort="review">CREATED</th>
                     </tr>
                 </thead>
-                <tbody class="list" id="table-latest-review-body">
+                <tbody class="list" id="table-latest-review-body-visitor">
                     <!-- Data will be inserted here by JavaScript -->
                 </tbody>
-            </table>
+              </table>
             
             </div>
             <div class="row align-items-center py-1">
@@ -466,7 +467,7 @@
     <script src="../asset/assets/js/ecommerce-dashboard.js"></script>
 
     <!-- RENDER -->
-    <script src="../render/renderer.js"></script>
+    <script src="../render/visitor_record_renderer.js"></script>
 
   </body>
 

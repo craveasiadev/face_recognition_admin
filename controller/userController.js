@@ -159,3 +159,19 @@ ipcMain.handle('update-user', (event, updatedUser) => {
         });
     });
 });
+
+//Get all device by area
+ipcMain.handle('get-device-by-area', (event, deviceId) => {
+    console.log(`Fetching devices for area: ${deviceId}`); // Add this for logging the deviceId
+    return new Promise((resolve, reject) => {
+        db.all(`SELECT * FROM device WHERE device_area_id = ?`, [deviceId], (err, rows) => {
+            if (err) {
+                console.error("Database error:", err); // Add this for logging errors
+                reject(err);
+            } else {
+                console.log("Fetched devices:", rows); // Add this for logging fetched rows
+                resolve(rows);
+            }
+        });
+    });
+});

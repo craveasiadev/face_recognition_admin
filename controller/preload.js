@@ -28,4 +28,7 @@ contextBridge.exposeInMainWorld('api', {
 
     //User Blacklist
     getUsersBlacklist: () => ipcRenderer.invoke('get-users-blacklist'),
+
+    //Get device by device area
+    getDeviceByArea: (deviceId) => ipcRenderer.invoke('get-device-by-area', deviceId), 
 });
