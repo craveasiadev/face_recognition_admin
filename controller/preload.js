@@ -19,7 +19,9 @@ contextBridge.exposeInMainWorld('api', {
     insertUser: (name, username, email, phone, role, image, sn, card, id_card) => ipcRenderer.invoke('insert-user', { name, username, email, phone, role, image, sn, card, id_card }),
     //Delete User
     deleteUser: (userId) => ipcRenderer.invoke('delete-user', userId),
-
+    //Get User by ID
+    getUserById: (userId) => ipcRenderer.invoke('get-user-by-id', userId),
+    
     //User Employee
     getUsersEmployee: () => ipcRenderer.invoke('get-users-employee'),
     

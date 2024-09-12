@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const recordTableVisitor = document.getElementById('table-latest-review-body-visitor');
+    const recordTableBlacklist = document.getElementById('table-latest-review-body-blacklist');
     const loading = document.getElementById("loading-spinner");
     
     try {
         const payloadVisitor = {
-            personType: 2,
+            personType: 3,
             index: 1,
             length: 20,
             order: 0
@@ -35,10 +35,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             // For each record in the data array, append a row to the table
             data.forEach((record) => {
                 const faceFlagText = record.openDoorFlag === 1 ? 'YES' : 'NO';
-                const stranger = record.strangerFlag === 1 ? 'Stranger' : 'Registered Visitor'
+                const stranger = record.strangerFlag === 1 ? 'Stranger' : 'Registered Employee'
                 const row = `
                     <tr>
-                        <td class="white-space-nowrap fs-9 ps-0 align-middle">
+                        <td class="fs-9 ps-0 align-middle">
                             <div class="form-check mb-0 fs-8">
                                 <input class="form-check-input" type="checkbox" />
                             </div>
@@ -51,7 +51,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                             <div class="modal-dialog modal-dialog-centered">
                               <div class="modal-content">
                                 <div class="modal-header">
-                                  <h5 class="modal-title" id="${record.id}">${record.personName || 'Unknown'}</h5>
+                                  <h5 class="modal-title" id="${record.id}">${record.personName}</h5><br>
+                                  
                                   <button class="btn btn-close p-1" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
@@ -80,7 +81,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 `;
 
                 // Insert the row into the table body
-                recordTableVisitor.insertAdjacentHTML('beforeend', row);
+                recordTableBlacklist.insertAdjacentHTML('beforeend', row);
                 loading.style.display = "none";
             });
         });

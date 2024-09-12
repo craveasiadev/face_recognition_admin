@@ -175,3 +175,21 @@ ipcMain.handle('get-device-by-area', (event, deviceId) => {
         });
     });
 });
+
+//Get User by ID
+ipcMain.handle('get-user-by-id', (event, userId) => {
+    return new Promise((resolve, reject) => {
+        db.get(`
+            SELECT users.*, roles.role_name
+            FROM users
+            JOIN roles ON users.role_id = roles.id
+            WHERE users.id = ?
+        `, [userId], (err, row) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(row);
+            }
+        });
+    });
+});

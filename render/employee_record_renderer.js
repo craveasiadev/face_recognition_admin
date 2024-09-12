@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const recordTableEmployee = document.getElementById('table-latest-review-body-employee');
+    const loading = document.getElementById("loading-spinner");
     
     try {
         const payloadVisitor = {
@@ -37,12 +38,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const stranger = record.strangerFlag === 1 ? 'Stranger' : 'Registered Employee'
                 const row = `
                     <tr>
-                        <td class="white-space-nowrap fs-9 ps-0 align-middle">
+                        <td class="fs-9 ps-0 align-middle">
                             <div class="form-check mb-0 fs-8">
                                 <input class="form-check-input" type="checkbox" />
                             </div>
                         </td>
-                        <td class="align-middle">
+                        <td class="align-middle border-end border-translucent">
                             <a href="#" data-bs-toggle="modal" data-bs-target="#${record.id}">
                                <img src="${record.checkImgUrl}" alt="Snapshot" width="80" height="80" style="border-radius: 10%" />
                             </a>
@@ -62,17 +63,26 @@ document.addEventListener('DOMContentLoaded', async () => {
                             </div>
                           </div>
                         </td>
-                        <td class="align-middle">${record.personName || 'Unknown'}</td>
-                        <td class="align-middle">${record.cardNo || 'N/A'}</td>
-                        <td class="align-middle">${record.personSn || 'N/A'}</td>
-                        <td class="align-middle">${faceFlagText}</td>
-                        <td class="align-middle">${stranger}</td>
-                        <td class="align-middle">${new Date(record.createTime).toLocaleString()}</td>
+                        <td class="align-middle border-end border-translucent">${record.personName || 'Unknown'}</td>
+                        <td class="align-middle border-end border-translucent">${record.cardNo || 'N/A'}</td>
+                        <td class="align-middle border-end border-translucent">${record.personSn || 'N/A'}</td>
+                        <td class="align-middle border-end border-translucent">${faceFlagText}</td>
+                        <td class="align-middle border-end border-translucent">${stranger}</td>
+                        <td class="align-middle border-end border-translucent">${new Date(record.createTime).toLocaleString()}</td>
+                        <td class="align-middle white-space-nowrap text-center">
+                            <div class="btn-reveal-trigger position-static">
+                                <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h fs-10"></span></button>
+                                <div class="dropdown-menu dropdown-menu-end py-2">
+                                    <button type="button" id="deleteRecord" class="dropdown-item text-danger"><i class="fa-solid fa-trash"></i> Remove</button>
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                 `;
 
                 // Insert the row into the table body
                 recordTableEmployee.insertAdjacentHTML('beforeend', row);
+                loading.style.display = "none";
             });
         });
     } catch (err) {

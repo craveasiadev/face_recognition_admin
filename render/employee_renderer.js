@@ -202,6 +202,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     
 });
 
+document.addEventListener('click', (event) => {
+    if (event.target.classList.contains('view-user')) {
+        const userId = event.target.getAttribute('data-user-id');
+        console.log(userId)
+        window.location.href = `user_details.html?userId=${userId}`;
+    }
+});
+
 
 // Function to show alert messages
 function showAlert(message, type) {

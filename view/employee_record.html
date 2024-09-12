@@ -270,13 +270,8 @@
                     </div>
                   </div>
                   <div class="col-auto">
-                    <button class="btn btn-sm btn-phoenix-secondary bg-body-emphasis bg-body-hover me-2" type="button">All products</button>
-                    <button class="btn btn-sm btn-phoenix-secondary bg-body-emphasis bg-body-hover action-btn" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h" data-fa-transform="shrink-2"></span></button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                      <li><a class="dropdown-item" href="#">Action</a></li>
-                      <li><a class="dropdown-item" href="#">Another action</a></li>
-                      <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
+                    <button id="refreshButton" class="btn btn-sm btn-phoenix-secondary bg-body-emphasis bg-body-hover me-2" type="button"><i class="fa-solid fa-arrows-rotate"></i> Refresh</button>
+                    
                   </div>
                 </div>
               </div>
@@ -284,23 +279,28 @@
             <div class="table-responsive mx-n1 px-1 scrollbar">
               <table class="table fs-9 mb-0 border-top border-translucent">
                 <thead>
-                    <tr>
+                    <tr class="bg-body-highlight">
                         <th class="white-space-nowrap fs-9 ps-0 align-middle">
                             <div class="form-check mb-0 fs-8">
                                 <input class="form-check-input" id="checkbox-bulk-reviews-select" type="checkbox" data-bulk-select='{"body":"table-latest-review-body"}' />
                             </div>
                         </th>
-                        <th class="sort white-space-nowrap align-middle" scope="col" style="min-width:110px;" data-sort="product">IMAGE</th>
-                        <th class="sort align-middle" scope="col" data-sort="customer" style="min-width:110px;">NAME</th>
-                        <th class="sort align-middle" scope="col" data-sort="rating" style="min-width:110px;">CARD NUMBER</th>
-                        <th class="sort align-middle" scope="col" style="max-width:110px;" data-sort="review">SN</th>
-                        <th class="sort align-middle" scope="col" style="max-width:110px;" data-sort="review">PASS</th>
-                        <th class="sort align-middle" scope="col" style="max-width:110px;" data-sort="review">IDENTITY</th>
-                        <th class="sort align-middle" scope="col" style="max-width:110px;" data-sort="review">CREATED</th>
+                        <th class="sort align-middle border-end border-translucent" scope="col" style="min-width:110px;" data-sort="product">IMAGE</th>
+                        <th class="sort align-middle border-end border-translucent" scope="col" data-sort="customer" style="min-width:100px;">NAME</th>
+                        <th class="sort align-middle border-end border-translucent" scope="col" data-sort="rating" style="min-width:100px;">CARD NUMBER</th>
+                        <th class="sort align-middle border-end border-translucent" scope="col" style="max-width:100px;" data-sort="review">SN</th>
+                        <th class="sort align-middle border-end border-translucent" scope="col" style="max-width:100px;" data-sort="review">PASS</th>
+                        <th class="sort align-middle border-end border-translucent" scope="col" style="max-width:100px;" data-sort="review">IDENTITY</th>
+                        <th class="sort align-middle border-end border-translucent" scope="col" style="max-width:100px;" data-sort="review">CREATED</th>
+                        <th class="sort align-middle border-end border-translucent" scope="col"></th>
                     </tr>
                 </thead>
                 <tbody class="list" id="table-latest-review-body-employee">
                     <!-- Data will be inserted here by JavaScript -->
+                    <div class="spinner-border text-success" role="status" id="loading-spinner">
+                      <span class="visually-hidden">Loading...</span>
+                    
+                    </div>
                 </tbody>
               </table>
             
@@ -468,6 +468,12 @@
 
     <!-- RENDER -->
     <script src="../render/employee_record_renderer.js"></script>
+    <script>
+      document.getElementById('refreshButton').addEventListener('click', () => {
+          // Refresh the page
+          window.location.reload();
+      });
+    </script>
 
   </body>
 
