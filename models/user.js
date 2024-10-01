@@ -12,7 +12,6 @@ const createUserTable = () => {
                 role_id INTEGER,
                 profile_image TEXT,
                 user_sn TEXT UNIQUE,
-                id_number INTEGER UNIQUE,
                 card_number INTEGER UNIQUE,
                 face_number INTEGER,
                 order_number TEXT,

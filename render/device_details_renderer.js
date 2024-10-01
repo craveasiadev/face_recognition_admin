@@ -71,11 +71,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                       
                       </div>
                   </div>
-
+                 
                   <button class="btn btn-primary mt-5 w-100" type="submit">Save</button>
+                  <button id="refreshButton" type="button" class="btn btn-sm btn-outline-info w-100 mt-3"><i class="fa-solid fa-arrows-rotate"></i> Refresh</button>
                   
               </form>
           `;
+
+          document.getElementById('refreshButton').addEventListener('click', () => {
+              // Refresh the page
+              window.location.href = `device_details.html?deviceId=${deviceId}`;
+          });
 
           //edit details function
           document.getElementById("edit-device-details").addEventListener('submit', async (event) => {

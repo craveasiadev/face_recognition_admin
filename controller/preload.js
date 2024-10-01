@@ -16,7 +16,7 @@ contextBridge.exposeInMainWorld('api', {
     updatePass: (deviceId, newPass) => ipcRenderer.invoke('update-device-pass', { deviceId, newPass }),
 
     //Insert User
-    insertUser: (name, username, email, phone, role, image, sn, card, id_card) => ipcRenderer.invoke('insert-user', { name, username, email, phone, role, image, sn, card, id_card }),
+    insertUser: (name, username, email, phone, role, image, sn, card) => ipcRenderer.invoke('insert-user', { name, username, email, phone, role, image, sn, card }),
     //Delete User
     deleteUser: (userId) => ipcRenderer.invoke('delete-user', userId),
     //Get User by ID
@@ -33,4 +33,8 @@ contextBridge.exposeInMainWorld('api', {
 
     //Get device by device area
     getDeviceByArea: (deviceId) => ipcRenderer.invoke('get-device-by-area', deviceId), 
+
+    //
+    getSettings: () => ipcRenderer.invoke('get-settings'),
+    updateSettings: (hostname, api) => ipcRenderer.invoke('update-settings', {hostname, api}),
 });

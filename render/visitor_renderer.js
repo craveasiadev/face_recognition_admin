@@ -40,15 +40,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Failed to load users:', err);
     }
 
+    function generateUserSN(length = 7) {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%';
+        let userSN = '';
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * characters.length);
+            userSN += characters[randomIndex];
+        }
+        return userSN;
+    }
+
     document.getElementById("visitorForm").addEventListener("submit", async (event) => {
         event.preventDefault();
 
         const name = document.getElementById("name").value;
         const email = document.getElementById("email").value;
         const phone = document.getElementById("phone").value;
-        const sn = document.getElementById("sn").value;
+        const sn = generateUserSN();
         const card = document.getElementById("card").value;
-        const id_card = document.getElementById("id_card").value;
         const role = 2;
         const area = document.getElementById("device_area").value;
         const username = document.getElementById("name").value;
@@ -69,13 +78,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 image = fileReader.result; // This will give base64 image data
     
                 // Proceed with the form submission using the base64 data
-                await submitForm(name, username, email, phone, role, image, sn, card, id_card, area);
+                await submitForm(name, username, email, phone, role, image, sn, card, area);
             };
     
             fileReader.readAsDataURL(file); // Convert file to base64
         } else {
             // If the user used the camera, `imageInput.value` is already set to base64
-            await submitForm(name, username, email, phone, role, image, sn, card, id_card, area);
+            await submitForm(name, username, email, phone, role, image, sn, card, area);
         }
     
         })
@@ -102,9 +111,9 @@ document.addEventListener('click', async (event) => {
 });
 
 // Helper function to submit form data
-async function submitForm(name, username, email, phone, role, image, sn, card, id_card, area) {
+async function submitForm(name, username, email, phone, role, image, sn, card, area) {
     try {
-        await window.api.insertUser(name, username, email, phone, role, image, sn, card, id_card);
+        await window.api.insertUser(name, username, email, phone, role, image, sn, card);
         console.log("User created successfully.");
         showAlert("User added successfully", "success");
 
@@ -116,6 +125,7 @@ async function submitForm(name, username, email, phone, role, image, sn, card, i
 
         const devices = await window.api.getDeviceByArea(area);
         console.log("Area ID:", area); // Add this to verify the value passed to the function
+        console.log("user sn:", sn);
         console.log("Devices fetched:", devices); // Already there
 
         const payload = {
@@ -125,7 +135,7 @@ async function submitForm(name, username, email, phone, role, image, sn, card, i
             cardNo: card,
             mobile: phone,
             acGroupNumber: 0,
-            verifyStyle: 1,
+            verifyStyle: 0,
             expiredStyle: 0,
             validTimeBegin: Date.now(),
             validTimeEnd: Date.now() + (1000 * 60 * 60 * 24 * 365) // 1-year expiration
@@ -136,6 +146,7 @@ async function submitForm(name, username, email, phone, role, image, sn, card, i
         const facePayload = {
             personSn: sn,
             imgBase64: cleanedBase64,
+            easy: 1,
         }
 
         devices.map(async (device) => {

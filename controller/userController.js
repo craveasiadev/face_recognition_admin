@@ -13,7 +13,7 @@ if (!fs.existsSync(imagesDir)) {
 }
 
 ipcMain.handle('insert-user', (event, data) => {
-    const { name, username, email, phone, role, image, sn, card, id_card } = data;
+    const { name, username, email, phone, role, image, sn, card } = data;
 
     // Generate a filename for the image
     const fileName = `${sn}_${Date.now()}.png`;
@@ -32,9 +32,9 @@ ipcMain.handle('insert-user', (event, data) => {
 
     return new Promise((resolve, reject) => {
         db.run(`
-            INSERT INTO users (name, username, email, phone, role_id, profile_image, user_sn, id_number, card_number)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `, [name, username, email, phone, role, fileName, sn, id_card, card], (err) => {
+            INSERT INTO users (name, username, email, phone, role_id, profile_image, user_sn, card_number)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `, [name, username, email, phone, role, fileName, sn, card], (err) => {
             if (err) {
                 console.error('Error inserting user:', err);
                 reject(err);
@@ -143,14 +143,14 @@ ipcMain.handle('get-users-blacklist', () => {
 
 //Update User data
 ipcMain.handle('update-user', (event, updatedUser) => {
-    const {  name, email, phone, role, image, sn, card, id_card, user_id } = updatedUser;
+    const {  name, email, phone, role, image, sn, card, user_id } = updatedUser;
     
     return new Promise((resolve, reject) => {
         db.run(`
             UPDATE users
-            SET name = ?, email = ?, phone = ?, role_id = ?, profile_image = ?, user_sn = ?, id_number = ?, card_number = ?
+            SET name = ?, email = ?, phone = ?, role_id = ?, profile_image = ?, user_sn = ?, card_number = ?
             WHERE id = ?
-        `, [name, email, phone, role, image, sn, id_card, card, user_id], function(err) {
+        `, [name, email, phone, role, image, sn, card, user_id], function(err) {
             if (err) {
                 reject(err);
             } else {

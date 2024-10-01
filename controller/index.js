@@ -4,6 +4,7 @@ const path = require('path');
 
 require("./userController");
 require("./deviceController");
+require("./settingsController");
 
 function createMainWindow() {
     const mainWindow = new BrowserWindow({
