@@ -4,7 +4,73 @@ document.addEventListener('DOMContentLoaded', async () => {
     const loading = document.getElementById("loading-spinner");
     
     try {
+        let allUser = [];
+        let indexCount = 1;
+        let hasData = true;
+        
+        // Function to fetch data from a single device
+        async function fetchDataFromDevice(device, payload) {
+            const url = `http://${device.device_ip}:8090/cgi-bin/js/person/findList`;
+        
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Basic ' + btoa('admin:' + device.communication_password)
+                    },
+                    body: JSON.stringify(payload)
+                });
+        
+                const result = await response.json();
+                return result.data;
+            } catch (error) {
+                console.error(`Error fetching data from ${device.device_ip}:`, error);
+                return null;
+            }
+        }
+        
+        while (hasData) {
+            console.log(indexCount);
+        
+            const payload = {
+                index: indexCount,
+                length: 10
+            };
+        
+            const alldevices = await window.api.getAllDevices();
+        
+            // Flag to track if any device has more data
+            let dataFound = false;
+        
+            // Use for...of to handle asynchronous fetching properly
+            for (const device of alldevices) {
+                const data = await fetchDataFromDevice(device, payload);
+        
+                if (data && data.length > 0) {
+                    console.log(data.length);
+                    allUser = [...allUser, ...data]; // Append new data to allUser array
+                    dataFound = true; // Set flag to true if data is found
+                }
+            }
+        
+            // If no device returned any data, stop the loop
+            if (!dataFound) {
+                hasData = false;
+            } else {
+                indexCount++; // Increment the index to fetch the next set of data
+            }
+        }
+        
+        // Once data is fetched, insert into the database
+        allUser.forEach(async (record) => {
+            console.log(record.name); // This should now log the names
+            await window.api.insertUser(record.name, "", "", "", 2, "", record.sn, record.cardNo);
+        });
+        
+
         const users = await window.api.getUsersVisitor();
+        
         
         userTableBody.innerHTML = users.map(user => `
             <tr>
@@ -133,7 +199,6 @@ async function submitForm(name, username, email, phone, role, image, sn, card, a
             sn: sn,
             name: name,
             cardNo: card,
-            mobile: phone,
             acGroupNumber: 0,
             verifyStyle: 0,
             expiredStyle: 0,
@@ -186,9 +251,11 @@ async function submitForm(name, username, email, phone, role, image, sn, card, a
             } else {
                 console.log(`User face added to device ${device.device_ip} successfully`);
             }
+
+            // window.location.reload();
         });
 
-        refreshTable(); // Refresh table after adding use
+        refreshTable(); // Refresh table after adding user
     } catch (err) {
         console.error('Failed to create user:', err);
     }

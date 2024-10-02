@@ -13,6 +13,7 @@ if (!fs.existsSync(imagesDir)) {
 }
 
 ipcMain.handle('insert-user', (event, data) => {
+    console.log('Inserting user into database:', data);
     const { name, username, email, phone, role, image, sn, card } = data;
 
     // Generate a filename for the image
@@ -165,6 +166,21 @@ ipcMain.handle('get-device-by-area', (event, deviceId) => {
     console.log(`Fetching devices for area: ${deviceId}`); // Add this for logging the deviceId
     return new Promise((resolve, reject) => {
         db.all(`SELECT * FROM device WHERE device_area_id = ?`, [deviceId], (err, rows) => {
+            if (err) {
+                console.error("Database error:", err); // Add this for logging errors
+                reject(err);
+            } else {
+                console.log("Fetched devices:", rows); // Add this for logging fetched rows
+                resolve(rows);
+            }
+        });
+    });
+});
+
+ipcMain.handle('get-all-devices', () => {
+     // Add this for logging the deviceId
+    return new Promise((resolve, reject) => {
+        db.all(`SELECT * FROM device`, (err, rows) => {
             if (err) {
                 console.error("Database error:", err); // Add this for logging errors
                 reject(err);

@@ -33,6 +33,7 @@ contextBridge.exposeInMainWorld('api', {
 
     //Get device by device area
     getDeviceByArea: (deviceId) => ipcRenderer.invoke('get-device-by-area', deviceId), 
+    getAllDevices: () => ipcRenderer.invoke('get-all-devices'),
 
     //
     getSettings: () => ipcRenderer.invoke('get-settings'),
