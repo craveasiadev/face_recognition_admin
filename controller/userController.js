@@ -17,9 +17,16 @@ ipcMain.handle('insert-user', (event, data) => {
     const { name, username, email, phone, role, image, sn, card } = data;
 
     // Generate a filename for the image
-    const fileName = `${sn}_${Date.now()}.png`;
-    const filePath = path.join(imagesDir, fileName);
-
+    let fileName;
+    let filePath;
+    if (image == "" ) {
+        fileName = "no image";
+        filePath = path.join(imagesDir, fileName);
+    } else {
+        fileName = `${sn}_${Date.now()}.png`;
+        filePath = path.join(imagesDir, fileName);
+    }
+    
     // Save base64 image data to a file
     if (image.startsWith('data:image/')) {
         const base64Data = image.replace(/^data:image\/\w+;base64,/, '');
@@ -201,6 +208,21 @@ ipcMain.handle('get-user-by-id', (event, userId) => {
             JOIN roles ON users.role_id = roles.id
             WHERE users.id = ?
         `, [userId], (err, row) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(row);
+            }
+        });
+    });
+});
+
+//Find User by Card
+ipcMain.handle('get-user-by-card', (event, card) => {
+    return new Promise((resolve, reject) => {
+        db.get(`
+            SELECT * FROM users WHERE card_number = ?
+        `, [card], (err, row) => {
             if (err) {
                 reject(err);
             } else {

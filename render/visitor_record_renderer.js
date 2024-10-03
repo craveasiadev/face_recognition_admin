@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // For each record in the data array, append a row to the table
             data.forEach((record) => {
+                console.log(record.checkImgUrl)
                 const faceFlagText = record.openDoorFlag === 1 ? 'YES' : 'NO';
                 const stranger = record.strangerFlag === 1 ? 'Stranger' : 'Registered Visitor'
                 const row = `
