@@ -31,4 +31,4 @@ const initializeDatabase = async () => {
 
 initializeDatabase();
 
-module.exports = db;
+module.exports = initializeDatabase; // Export the function

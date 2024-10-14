@@ -1,11 +1,12 @@
 {
   "name": "face_recognition_dashboard",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "./controller/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon",
-    "migrate": "node ./models/migrate.js"
+    "migrate": "node ./models/migrate.js",
+    "build": "electron-builder"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +14,7 @@
   "description": "",
   "devDependencies": {
     "electron": "^32.0.1",
+    "electron-builder": "^25.1.8",
     "electronmon": "^2.0.3",
     "nodemon": "^3.1.4"
   },
@@ -20,5 +22,32 @@
     "axios": "^1.7.5",
     "bootstrap": "^5.3.3",
     "sqlite3": "^5.1.7"
+  },
+  "build": {
+    "appId": "com.Crave.FCS",
+    "productName": "FCS",
+    "files": [
+      "controller/**/*",  
+      "models/**/*",     
+      "view/**/*",
+      "asset/**/*",  
+      "uploads/**/*", 
+      "render/**/*",          
+      "node_modules/**/*",
+      "preload.js",
+      "data.db",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "models/",  
+        "to": "models/",    
+        "filter": ["**/*"]
+      }
+    ],
+    "win": {
+      "target": "nsis", 
+      "icon": "icon.ico" 
+    }
   }
 }

@@ -1,11 +1,11 @@
-const { ipcMain } = require('electron');
+const { app, ipcMain } = require('electron');
 const db = require("../models/db");
 const fs = require('fs');
 const path = require('path');
 
 
 // Directory to save uploaded images
-const imagesDir = path.join(__dirname, '..', 'uploads');
+const imagesDir = path.join(app.getPath('userData'), '..', 'uploads');
 
 // Ensure the directory exists
 if (!fs.existsSync(imagesDir)) {
@@ -78,7 +78,7 @@ ipcMain.handle('delete-user', (event, userId) => {
 
                 // If the user had a profile image, attempt to delete it from the uploads folder
                 if (profileImage) {
-                    const imagePath = path.join(__dirname, '..', 'uploads', profileImage);
+                    const imagePath = path.join(app.getPath('userData'), '..', 'uploads', profileImage);
                     
                     // Check if the file exists before deleting it
                     fs.access(imagePath, fs.constants.F_OK, (err) => {
