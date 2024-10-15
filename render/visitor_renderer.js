@@ -105,24 +105,30 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Function to check and insert user data into the database
         async function checkAndInsertUser(record) {
             try {
-                // Check if the user with the same cardNo exists
-                const existingUser = await window.api.getUserByCard(record.cardNo);
+                // Check if the user.type is 2 before proceeding
+                if (record.type === 2) {
+                    console.log("this user type is 2 !")
+                    // Check if the user with the same cardNo exists
+                    const existingUser = await window.api.getUserByCard(record.cardNo);
         
-                if (!existingUser) {
-                    // If no existing user, insert the new user with image
-                    await window.api.insertUser(
-                        record.name, 
-                        "", 
-                        "", 
-                        "", 
-                        2, 
-                        record.imgBase64 || "", // Use the image data, or empty if none
-                        record.sn, 
-                        record.cardNo
-                    );
-                    console.log(`Inserted user: ${record.name}`);
+                    if (!existingUser) {
+                        // If no existing user, insert the new user with image
+                        await window.api.insertUser(
+                            record.name, 
+                            "", 
+                            "", 
+                            "", 
+                            2, // Role ID or appropriate value
+                            record.imgBase64 || "", // Use the image data, or empty if none
+                            record.sn, 
+                            record.cardNo
+                        );
+                        console.log(`Inserted user: ${record.name}`);
+                    } else {
+                        console.log(`User with card number ${record.cardNo} already exists, skipping insertion.`);
+                    }
                 } else {
-                    // console.log(`User with card number ${record.cardNo} already exists, skipping insertion.`);
+                    console.log(`User ${record.name} has type ${record.type}, skipping insertion.`);
                 }
             } catch (error) {
                 console.error('Error during user insertion:', error);
