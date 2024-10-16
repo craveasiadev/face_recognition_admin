@@ -3,143 +3,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const userTableBody = document.getElementById('table-latest-review-body');
     const loading = document.getElementById("loading-spinner");
     
-    try {
-        let allUser = [];
-        let indexCount = 1;
-        let hasData = true;
-        
-        // Function to fetch data from a single device
-        async function fetchDataFromDevice(device, payload) {
-            const url = `http://${device.device_ip}:8090/cgi-bin/js/person/findList`;
-        
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Basic ' + btoa('admin:' + device.communication_password)
-                    },
-                    body: JSON.stringify(payload)
-                });
-        
-                const result = await response.json();
-                return result.data;
-            } catch (error) {
-                console.error(`Error fetching data from ${device.device_ip}:`, error);
-                return null;
-            }
-        }
-        
-        // Function to fetch image data using the user SN
-        async function fetchImageFromDevice(device_ip, userSn, com_pass) {
-            const url = `http://${device_ip}:8090/cgi-bin/js/face/find`;
-        
-            const payload = {
-                personSn: userSn
-            };
-        
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Basic ' + btoa('admin:' + com_pass)
-                    },
-                    body: JSON.stringify(payload)
-                });
-        
-                const result = await response.json();
-                if (result && result.data) {
-                    // Return the base64 image or empty string if no image found
-                    return result.data.imgBase64 || "";
-                }
-            } catch (error) {
-                console.error(`Error fetching image for userSn ${userSn} from ${device_ip}:`, error);
-                return "";
-            }
-            return "";
-        }
-        
-        while (hasData) {
-            // console.log(indexCount);
-        
-            const payload = {
-                index: indexCount,
-                length: 10
-            };
-        
-            const alldevices = await window.api.getAllDevices();
-        
-            // Flag to track if any device has more data
-            let dataFound = false;
-        
-            // Use for...of to handle asynchronous fetching properly
-            for (const device of alldevices) {
-                const data = await fetchDataFromDevice(device, payload);
-        
-                if (data && data.length > 0) {
-                    // console.log(data.length);
-                    // For each user, fetch their image
-                    for (const user of data) {
-                        // console.log(user.sn)
-                        const imgBase64 = await fetchImageFromDevice(device.device_ip, user.sn, device.communication_password);
-                        // Add the user and the image to the allUser array
-                        allUser.push({
-                            ...user, // Include the rest of the user data
-                            imgBase64 // Add the image
-                        });
-                    }
-        
-                    dataFound = true; // Set flag to true if data is found
-                }
-            }
-        
-            // If no device returned any data, stop the loop
-            if (!dataFound) {
-                hasData = false;
-            } else {
-                indexCount++; // Increment the index to fetch the next set of data
-            }
-        }
-        
-        // Function to check and insert user data into the database
-        async function checkAndInsertUser(record) {
-            try {
-                // Check if the user.type is 2 before proceeding
-                if (record.type === 2) {
-                    console.log("this user type is 2 !")
-                    // Check if the user with the same cardNo exists
-                    const existingUser = await window.api.getUserByCard(record.cardNo);
-        
-                    if (!existingUser) {
-                        // If no existing user, insert the new user with image
-                        await window.api.insertUser(
-                            record.name, 
-                            "", 
-                            "", 
-                            "", 
-                            2, // Role ID or appropriate value
-                            record.imgBase64 || "", // Use the image data, or empty if none
-                            record.sn, 
-                            record.cardNo
-                        );
-                        console.log(`Inserted user: ${record.name}`);
-                    } else {
-                        console.log(`User with card number ${record.cardNo} already exists, skipping insertion.`);
-                    }
-                } else {
-                    console.log(`User ${record.name} has type ${record.type}, skipping insertion.`);
-                }
-            } catch (error) {
-                console.error('Error during user insertion:', error);
-            }
-        }
-        
-        //Once data is fetched, insert into the database
-        allUser.forEach(async (record) => {
-            await checkAndInsertUser(record);
-        });
-                
+    try {      
 
         const users = await window.api.getUsersVisitor();
         
@@ -175,6 +39,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </td>
             </tr>
         `).join('');
+        
 
         loading.style.display = "none";
     } catch (err) {
@@ -392,7 +257,11 @@ async function refreshTable() {
                 <td class="align-middle border-end border-translucent">${user.phone}</td>
                 <td class="align-middle border-end border-translucent">${user.role_name}</td>
                 <td class="align-middle text-center border-end border-translucent">
-                    <img src="../uploads/${user.profile_image}" alt="${user.name}" style="width: 110px; height: 110px; object-fit: cover; border-radius: 10%;"/>
+                ${user.profile_image === "no image" ? 
+                    `<span>No image</span>` : 
+                    `<img src="../uploads/${user.profile_image}" alt="${user.name}" 
+                     style="width: 110px; height: 110px; object-fit: cover; border-radius: 10%;" />`}
+                </td>
                 </td>
                 <td class="align-middle border-end border-translucent">${user.card_number}</td>
                 <td class="align-middle border-end border-translucent">${user.created_at}</td>

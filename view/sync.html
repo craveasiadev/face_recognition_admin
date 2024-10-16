@@ -270,11 +270,14 @@
         
         <div class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis pt-7 border-y">
            
+            <!-- <input id="active-qr" type="text"> -->
+            <button type="button" id="sync-btn" class="btn btn-primary mb-5 mt-5">Start Sync</button>
             
-            <button type="button" id="startScan" class="btn btn-primary mb-5 mt-5">Start Sync</button>
             
+           <div id="sync-result" class="p-4">
+            <p>not sync yet</p>
             
-           
+           </div>
             
             
         </div>
@@ -415,7 +418,6 @@
     <script src="../asset/vendors/is/is.min.js"></script>
     <script src="../asset/vendors/fontawesome/all.min.js"></script>
     <script src="../asset/vendors/lodash/lodash.min.js"></script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script>
     <script src="../asset/vendors/list.js/list.min.js"></script>
     <script src="../asset/vendors/feather-icons/feather.min.js"></script>
     <script src="../asset/vendors/dayjs/dayjs.min.js"></script>
@@ -427,13 +429,8 @@
     <script src="../asset/assets/js/ecommerce-dashboard.js"></script>
 
     <!-- RENDER -->
-    <script src="../render/qrRenderer.js"></script>
-    <script>
-      document.getElementById('refreshButton').addEventListener('click', () => {
-          // Refresh the page
-          window.location.reload();
-      });
-    </script>
+    <script src="../render/sync_renderer.js"></script>
+    
 
   </body>
 

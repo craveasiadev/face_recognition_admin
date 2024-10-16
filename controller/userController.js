@@ -5,6 +5,7 @@ const path = require('path');
 
 
 // Directory to save uploaded images
+// const imagesDir = path.join(app.getPath('userData'), '..', 'uploads');
 const imagesDir = path.join(app.getPath('userData'), '..', 'uploads');
 
 // Ensure the directory exists
@@ -28,12 +29,27 @@ ipcMain.handle('insert-user', (event, data) => {
     }
     
     // Save base64 image data to a file
-    if (image.startsWith('data:image/')) {
-        const base64Data = image.replace(/^data:image\/\w+;base64,/, '');
+    if (image) {
+        let base64Data;
+        if (image.startsWith('data:image/')) {
+            // Log the fact that the image has a header
+            console.log('Image has a base64 header.');
+            base64Data = image.replace(/^data:image\/\w+;base64,/, '');
+        } else {
+            // Log the fact that the image does not have a header
+            console.log('Image is pure base64.');
+            base64Data = image;
+        }
 
+        // Log the first 100 characters of the base64 data for debugging
+        console.log('Base64 image data (first 100 characters):', base64Data.substring(0, 100));
+
+        // Save the base64 image data to the file
         fs.writeFile(filePath, base64Data, { encoding: 'base64' }, (err) => {
             if (err) {
                 console.error('Error saving image:', err);
+            } else {
+                console.log('Image saved successfully at:', filePath);
             }
         });
     }
