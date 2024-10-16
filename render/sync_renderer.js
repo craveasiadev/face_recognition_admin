@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function loginAndGetToken(email, password) {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/auth/login?email=${email}&password=${password}`, {
+            const response = await fetch(`https://stagingqbotapi.wonderpark.my/api/auth/login?email=${email}&password=${password}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     
             
-            const apiResponse = await fetch('http://127.0.0.1:8000/api/user-registration-store', {
+            const apiResponse = await fetch('https://stagingqbotapi.wonderpark.my/api/user-registration-store', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
