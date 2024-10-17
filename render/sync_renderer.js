@@ -245,6 +245,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 syncDiv.innerHTML = JSON.stringify(apiResult.message, null, 2);
             } else {
                 console.error('Sync failed:', apiResult);
+                syncDiv.innerHTML = JSON.stringify(apiResult.message, null, 2);
             }
         } catch (error) {
             console.error('Error syncing data:', error);
