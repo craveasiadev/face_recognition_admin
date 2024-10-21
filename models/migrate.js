@@ -1,28 +1,30 @@
-const db = require('./db');
+
 const createUsersTable = require('./user');
 const { createRoleTable, insertPredefinedRoles } = require('./role');
 const createOrganizationTable = require('./organization');
 const createDeviceAreaTable = require('./device_area');
 const createDeviceTable = require('./device');
-const createSettingsTable = require('./settings');
+const {createSettingsTable, insertPredefinedSettings} = require('./settings');
 
 // Function to initialize the database
-const initializeDatabase = async () => {
+const initializeDatabase =  () => {
     try {
         console.log('Creating roles table...');
-        await createRoleTable();
-        console.log('Inserting predefined roles...');
-        await insertPredefinedRoles();
+         createRoleTable();
         console.log('Creating organization table...');
-        await createOrganizationTable();
+         createOrganizationTable();
         console.log('Creating users table...');
-        await createUsersTable();
+         createUsersTable();
         console.log('Creating device area table...');
-        await createDeviceAreaTable();
+         createDeviceAreaTable();
         console.log('Creating device table...');
-        await createDeviceTable();
+         createDeviceTable();
         console.log('Creating settings table...');
-        await createSettingsTable();
+         createSettingsTable();
+        console.log('Inserting rolse data...');
+         insertPredefinedRoles();
+        console.log('Inserting settings data...');
+         insertPredefinedSettings();
         console.log('Database initialized successfully');
     } catch (err) {
         console.error('Error initializing database:', err);

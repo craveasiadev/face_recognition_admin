@@ -19,9 +19,9 @@ ipcMain.handle('update-settings', (event, updatedSettings) => {
     return new Promise((resolve, reject) => {
         db.run(`
             UPDATE settings
-            SET server_hostname = ?, api_url = ?
+            SET value = ?
             WHERE id = 1
-        `, [hostname, api], function(err) {
+        `, [api], function(err) {
             if (err) {
                 reject(err);
             } else {

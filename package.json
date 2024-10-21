@@ -6,6 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon",
     "migrate": "node ./models/migrate.js",
+    "seed": "node ./models/seed.js",
     "build": "electron-builder"
   },
   "keywords": [],

@@ -2,8 +2,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     const settings = await window.api.getSettings();
 
-    console.log(settings)
-
     const settingsDetails = document.getElementById('settings-details');
 
     if (!settingsDetails) {
@@ -18,14 +16,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                   <div class="row g-3">
                       <div class="col-md-12">
                           <div class="form-floating">
-                              <input class="form-control" type="text" name="hostname" id="hostname" placeholder="Device Key/SN" value="${settings.server_hostname}" />
-                              <label for="add-property-wizardwizard-name">Server Hostname</label>
-                          </div>
-                      </div>
-                      <div class="col-md-12">
-                          <div class="form-floating">
-                              <input class="form-control" type="text" name="api" id="api" placeholder="Device Key/SN" value="${settings.api_url}" />
-                              <label for="add-property-wizardwizard-name">API Url</label>
+                              <input class="form-control" type="text" name="api" id="api" placeholder="Device Key/SN" value="${settings.value}" />
+                              <label for="add-property-wizardwizard-name">${settings.variable}</label>
                           </div>
                       </div>
                      
@@ -47,12 +39,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         //edit details function
         document.getElementById("edit-settings-details").addEventListener('submit', async (event) => {
           event.preventDefault();
-          const hostname = document.getElementById("hostname").value;
           const api = document.getElementById("api").value;
           
         
           try {
-              await window.api.updateSettings(hostname, api);
+              await window.api.updateSettings(api);
               console.log("Device area inserted successfully.");
               // Add ?success to the current URL without refreshing the page
               const newUrl = `${window.location.pathname}&success=1`;

@@ -25,27 +25,38 @@ const createRoleTable = () => {
 
 const insertPredefinedRoles = () => {
     return new Promise((resolve, reject) => {
-        const roles = ['internal staff', 'visitor', 'blacklist'];
-        const insertRole = db.prepare(`INSERT INTO roles (role_name) VALUES (?)`);
-
-        roles.forEach((role, index, array) => {
-            insertRole.run(role, (err) => {
-                if (err) {
-                    console.error(`Error inserting role '${role}':`, err);
-                    reject(err);
-                } else {
-                    console.log(`Role '${role}' inserted successfully.`);
-                    if (index === array.length - 1) {
-                        insertRole.finalize((finalizeErr) => {
-                            if (finalizeErr) {
-                                reject(finalizeErr);
-                            } else {
-                                resolve();
+        db.get(`SELECT COUNT(*) AS count FROM roles`, (err, row) => {
+            if (err) {
+                console.error('Error checking settings table:', err);
+                reject(err);
+            } else if (row.count === 0) {
+                // Insert dummy data if the table is empty
+                const roles = ['internal staff', 'visitor', 'blacklist'];
+                const insertRole = db.prepare(`INSERT INTO roles (role_name) VALUES (?)`);
+        
+                roles.forEach((role, index, array) => {
+                    insertRole.run(role, (err) => {
+                        if (err) {
+                            console.error(`Error inserting role '${role}':`, err);
+                            reject(err);
+                        } else {
+                            console.log(`Role '${role}' inserted successfully.`);
+                            if (index === array.length - 1) {
+                                insertRole.finalize((finalizeErr) => {
+                                    if (finalizeErr) {
+                                        reject(finalizeErr);
+                                    } else {
+                                        resolve();
+                                    }
+                                });
                             }
-                        });
-                    }
-                }
-            });
+                        }
+                    });
+                });
+            } else {
+                console.log('Settings table already has data. No need to insert dummy data.');
+                resolve();
+            }
         });
     });
 };

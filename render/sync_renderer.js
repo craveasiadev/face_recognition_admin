@@ -3,10 +3,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     // const activeQR = document.getElementById("active-qr");
 
     // activeQR.focus();
+    const settings = await window.api.getSettings();
 
     async function loginAndGetToken(email, password) {
         try {
-            const response = await fetch(`https://stagingqbotapi.wonderpark.my/api/auth/login?email=${email}&password=${password}`, {
+            const response = await fetch(`${settings.value}/auth/login?email=${email}&password=${password}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -230,7 +231,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     
             
-            const apiResponse = await fetch('https://stagingqbotapi.wonderpark.my/api/user-registration-store', {
+            const apiResponse = await fetch(`${settings.value}/user-registration-store`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

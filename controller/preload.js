@@ -38,5 +38,5 @@ contextBridge.exposeInMainWorld('api', {
 
     //
     getSettings: () => ipcRenderer.invoke('get-settings'),
-    updateSettings: (hostname, api) => ipcRenderer.invoke('update-settings', {hostname, api}),
+    updateSettings: (api) => ipcRenderer.invoke('update-settings', {api}),
 });
