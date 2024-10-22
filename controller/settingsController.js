@@ -13,6 +13,18 @@ ipcMain.handle('get-settings', () => {
     });
 });
 
+ipcMain.handle('get-auto-sync', () => {
+    return new Promise((resolve, reject) => {
+        db.get("SELECT * FROM settings WHERE id = 2", (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+});
+
 ipcMain.handle('update-settings', (event, updatedSettings) => {
     const { api } = updatedSettings;
     
@@ -22,6 +34,24 @@ ipcMain.handle('update-settings', (event, updatedSettings) => {
             SET value = ?
             WHERE id = 1
         `, [api], function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve({ success: true, changes: this.changes });
+            }
+        });
+    });
+});
+
+ipcMain.handle('update-auto-sync', (event, updatedAutoSync) => {
+    const { autosync } = updatedAutoSync;
+    
+    return new Promise((resolve, reject) => {
+        db.run(`
+            UPDATE settings
+            SET value = ?
+            WHERE id = 2
+        `, [autosync], function(err) {
             if (err) {
                 reject(err);
             } else {

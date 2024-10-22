@@ -39,7 +39,9 @@ contextBridge.exposeInMainWorld('api', {
 
     //sync section
     getSettings: () => ipcRenderer.invoke('get-settings'),
+    getAutoSync: () => ipcRenderer.invoke('get-auto-sync'),
     updateSettings: (api) => ipcRenderer.invoke('update-settings', {api}),
+    updateAutoSync: (autosync) => ipcRenderer.invoke('update-auto-sync', {autosync}),
     insertSyncRecordData: (type, details, status, status_details) => ipcRenderer.invoke('insert-sync-record-data', {type, details, status, status_details}),
     deleteSyncRecord: (syncRecordId) => ipcRenderer.invoke('delete-sync-record', syncRecordId),
     getSyncRecord: () => ipcRenderer.invoke('get-sync-record'),

@@ -363,7 +363,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </td>
                     <td class="align-middle border-end border-translucent">${record.type || 'Unknown'}</td>
                     <td class="align-middle border-end border-translucent">${record.details || 'N/A'}</td>
-                    <td class="align-middle border-end border-translucent">${record.status || 'Unknown'}</td>
+                   <td class="align-middle border-end border-translucent">
+                    <span class="badge badge-phoenix fs-10 ${record.status === 'success' ? 'badge-phoenix-success' : 'badge-phoenix-danger'}">
+                        ${record.status || 'Unknown'}
+                    </span>
+                </td>
                     <td class="align-middle border-end border-translucent">${record.status_details}</td>
                     <td class="align-middle border-end border-translucent">${record.created_at}</td>
                     <td class="align-middle white-space-nowrap text-center">
