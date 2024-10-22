@@ -5,6 +5,7 @@ const createOrganizationTable = require('./organization');
 const createDeviceAreaTable = require('./device_area');
 const createDeviceTable = require('./device');
 const {createSettingsTable, insertPredefinedSettings} = require('./settings');
+const createSyncRecordTable = require('./sync_record');
 
 // Function to initialize the database
 const initializeDatabase =  () => {
@@ -21,6 +22,8 @@ const initializeDatabase =  () => {
          createDeviceTable();
         console.log('Creating settings table...');
          createSettingsTable();
+         console.log('Creating sync_record table...');
+         createSyncRecordTable();
         console.log('Inserting rolse data...');
          insertPredefinedRoles();
         console.log('Inserting settings data...');

@@ -5,7 +5,6 @@ const path = require('path');
 
 
 // Directory to save uploaded images
-// const imagesDir = path.join(app.getPath('userData'), '..', 'uploads');
 const imagesDir = path.join(app.getPath('userData'), '..', 'uploads');
 
 // Ensure the directory exists
@@ -247,3 +246,17 @@ ipcMain.handle('get-user-by-card', (event, card) => {
         });
     });
 });
+
+ipcMain.handle('remove-users-role-based', (event, roleId) => {
+    return new Promise((resolve, reject) => {
+        db.run(`
+            DELETE FROM users WHERE role_id = ?
+        `, roleId, function(err) {
+            if (err) {
+                reject(err)
+            } else {
+                resolve({success : true, changes : this.changes})
+            }
+        })
+    })
+})

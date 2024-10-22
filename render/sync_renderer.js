@@ -40,6 +40,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             let indexCount = 1;
             let hasData = true;
             
+            await window.api.removeOldSyncData()
+            await window.api.removeUserRoleBased(2);
             // Function to fetch data from a single device
             async function fetchDataFromDevice(device, payload) {
                 const url = `http://${device.device_ip}:8090/cgi-bin/js/person/findList`;
@@ -140,9 +142,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                     // Check if the user.type is 2 before proceeding
                     if (record.type === 2) {
                         console.log("this user type is 2 !")
+                        console.log(record.cardNo)
                         // Check if the user with the same cardNo exists
                         const existingUser = await window.api.getUserByCard(record.cardNo);
-                        console.log(record.imgBase64)
+                        console.log(existingUser)
                         if (!existingUser) {
                             // If no existing user, insert the new user with image
                             await window.api.insertUser(
@@ -156,14 +159,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 record.cardNo
                             );
                             console.log(`Inserted user: ${record.name}`);
+                            // await window.api.insertSyncRecordData("fetch users", "get all visitor from device", "success", `success insert ${record.name}`)
                         } else {
                             console.log(`User with card number ${record.cardNo} already exists, skipping insertion.`);
+                            await window.api.insertSyncRecordData("fetch users", "get all visitor from device", "skipped", `${record.name} already exists in the database`)
                         }
                     } else {
                         console.log(`User ${record.name} has type ${record.type}, skipping insertion.`);
                     }
                 } catch (error) {
                     console.error('Error during user insertion:', error);
+                    await window.api.insertSyncRecordData("fetch users", "get all visitor from device", "failed", `failed to insert ${record.name}`)
                 }
             }
 
@@ -177,6 +183,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         console.log(record.imgBase64)
                         if (!existingUser) {
                             // If no existing user, insert the new user with image
+                            console.log("user not exists with this card number")
                             await window.api.insertUser(
                                 record.name, 
                                 "", 
@@ -188,14 +195,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 record.cardNo
                             );
                             console.log(`Inserted user: ${record.name}`);
+                            await window.api.insertSyncRecordData("fetch users", "get all employee from device", "success", `success insert ${record.name}`)
                         } else {
                             console.log(`User with card number ${record.cardNo} already exists, skipping insertion.`);
+                            await window.api.insertSyncRecordData("fetch users", "get all employee from device", "skipped", `${record.name} already exists in the database`)
                         }
                     } else {
                         console.log(`User ${record.name} has type ${record.type}, skipping insertion.`);
                     }
                 } catch (error) {
                     console.error('Error during user insertion:', error);
+                    await window.api.insertSyncRecordData("fetch users", "get all employee from device", "failed", `failed to insert ${record.name}`)
                 }
             }
             
@@ -214,7 +224,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
             
             const users = await window.api.getUsersVisitor();
-           console.log(users)
+
             const userData = users.map(user => {
                 
                 const [namePart, orderIdPart] = user.name.split(' '); // Split by space
@@ -229,8 +239,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 };
             });
 
-    
-            
             const apiResponse = await fetch(`${settings.value}/user-registration-store`, {
                 method: 'POST',
                 headers: {
@@ -240,19 +248,146 @@ document.addEventListener('DOMContentLoaded', async () => {
                 body: JSON.stringify({ users: userData })  
             });
 
-            const apiResult = await apiResponse.json();
+            let apiResult;
+
+            try {
+                // Attempt to parse the JSON response
+                apiResult = await apiResponse.json();
+            } catch (error) {
+                console.error('Failed to parse JSON:', error);
+                syncDiv.innerHTML = 'Failed to parse server response.';
+                return;
+            }
+            
+            // Check if the response was successful (status 2xx)
             if (apiResponse.ok) {
                 console.log('Sync successful', apiResult);
+                for (const user of apiResult.successfulRegistrations) {
+                    await window.api.insertSyncRecordData(
+                        "sync users", 
+                        "sync all visitors from database into server via API", 
+                        "success", 
+                        `Success to sync ${user.name} with order detailID ${user.order_detail_id}`
+                    );
+                }
                 syncDiv.innerHTML = JSON.stringify(apiResult.message, null, 2);
+                refreshTable();
             } else {
+                // If not successful (status not in 2xx), display the error message
                 console.error('Sync failed:', apiResult);
-                syncDiv.innerHTML = JSON.stringify(apiResult.message, null, 2);
+                let apiErrorMsg = JSON.stringify(apiResult.message || 'Unknown error', null, 2);
+                await window.api.insertSyncRecordData("sync users", "sync all visitors from database into server via API", "failed", `failed to sync ${users.name} with order detailID ${userData.order_detail_id} due to ${apiErrorMsg}`)
+                syncDiv.innerHTML = apiErrorMsg
+                refreshTable();
             }
+
         } catch (error) {
             console.error('Error syncing data:', error);
         }
     });
 
+
+    const recordTableSync = document.getElementById('table-latest-review-body-sync');
+    const loading = document.getElementById("loading-spinner");
+
+    const syncRecord = await window.api.getSyncRecord();
+
+    if (syncRecord.length > 0) {
+        recordTableSync.innerHTML = syncRecord.map(record => `
+            <tr>
+                <td class="white-space-nowrap fs-9 ps-0 align-middle">
+                    <div class="form-check mb-0 fs-8">
+                        <input class="form-check-input" type="checkbox" />
+                    </div>
+                </td>
+                <td class="align-middle border-end border-translucent">${record.type || 'Unknown'}</td>
+                <td class="align-middle border-end border-translucent">${record.details || 'N/A'}</td>
+                <td class="align-middle border-end border-translucent">
+                    <span class="badge badge-phoenix fs-10 ${record.status === 'success' ? 'badge-phoenix-success' : 'badge-phoenix-danger'}">
+                        ${record.status || 'Unknown'}
+                    </span>
+                </td>
+                <td class="align-middle border-end border-translucent">${record.status_details}</td>
+                <td class="align-middle border-end border-translucent">${record.created_at}</td>
+                <td class="align-middle white-space-nowrap text-center">
+                    <div class="btn-reveal-trigger position-static">
+                        <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h fs-10"></span></button>
+                        <div class="dropdown-menu dropdown-menu-end py-2">
+                            <button type="button" id="deleteRecord" data-record-id=${record.id} class="dropdown-item text-danger view-record"><i class="fa-solid fa-trash"></i> Remove</button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        `).join('')
+    } else {
+        // Provide a fallback if no users are found
+        recordTableSync.innerHTML = `
+            <tr>
+                <td colspan="9" class="text-center">No data available</td>
+            </tr>
+        `;
+    }
+
+    document.addEventListener('click', async (event) => {
+        console.log('Click event detected:', event.target);
+        if (event.target && event.target.id === 'deleteRecord') {
+            const row = event.target.closest('tr');
+            const userId = row.querySelector('.view-record').getAttribute('data-record-id');
+            
+            try {
+                await window.api.deleteSyncRecord(userId);
+                console.log("Deleted record successfully");
+                refreshTable();
+                // Optionally refresh the device list or remove the row from the table
+            } catch (error) {
+                console.error("Failed to delete record:", error);
+            }
+        }
+    });
+
+    loading.style.display = "none";
+
+    async function refreshTable() {
+        const recordTableSync = document.getElementById('table-latest-review-body-sync');
+        const loading = document.getElementById("loading-spinner");
+    
+        const syncRecord = await window.api.getSyncRecord();
+    
+        if (syncRecord.length > 0) {
+            recordTableSync.innerHTML = syncRecord.map(record => `
+                <tr>
+                    <td class="white-space-nowrap fs-9 ps-0 align-middle">
+                        <div class="form-check mb-0 fs-8">
+                            <input class="form-check-input" type="checkbox" />
+                        </div>
+                    </td>
+                    <td class="align-middle border-end border-translucent">${record.type || 'Unknown'}</td>
+                    <td class="align-middle border-end border-translucent">${record.details || 'N/A'}</td>
+                    <td class="align-middle border-end border-translucent">${record.status || 'Unknown'}</td>
+                    <td class="align-middle border-end border-translucent">${record.status_details}</td>
+                    <td class="align-middle border-end border-translucent">${record.created_at}</td>
+                    <td class="align-middle white-space-nowrap text-center">
+                        <div class="btn-reveal-trigger position-static">
+                            <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h fs-10"></span></button>
+                            <div class="dropdown-menu dropdown-menu-end py-2">
+                                <button type="button" id="deleteRecord" data-record-id=${record.id} class="dropdown-item text-danger view-record"><i class="fa-solid fa-trash"></i> Remove</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            `).join('')
+        } else {
+            // Provide a fallback if no users are found
+            recordTableSync.innerHTML = `
+                <tr>
+                    <td colspan="9" class="text-center">No data available</td>
+                </tr>
+            `;
+        }
+        
+        loading.style.display = "none";
+        
+    }
 
     
 })

@@ -278,6 +278,68 @@
             <p>not sync yet</p>
             
            </div>
+           <div data-list='{"valueNames":["product","customer","rating","review","time"],"page":6}'>
+            <div class="row align-items-end justify-content-between pb-5 g-3">
+              <div class="col-auto">
+                <h4>Sync Record</h4>
+                
+              </div>
+              <div class="col-12 col-md-auto">
+                <div class="row g-2 gy-3">
+                  <div class="col-auto flex-1">
+                    <div class="search-box">
+                      <form class="position-relative">
+                        <input class="form-control search-input search form-control-sm" type="search" placeholder="Search" aria-label="Search" />
+                        <span class="fas fa-search search-box-icon"></span>
+
+                      </form>
+                    </div>
+                  </div>
+                  <div class="col-auto">
+                    <button id="refreshButton" class="btn btn-sm btn-phoenix-secondary bg-body-emphasis bg-body-hover me-2" type="button"><i class="fa-solid fa-arrows-rotate"></i> Refresh</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="table-responsive mx-n1 px-1 scrollbar">
+              <table class="table fs-9 mb-0 border-top border-translucent">
+                <thead>
+                    <tr class="bg-body-highlight">
+                        <th class="white-space-nowrap fs-9 ps-0 align-middle">
+                            <div class="form-check mb-0 fs-8">
+                                <input class="form-check-input" id="checkbox-bulk-reviews-select" type="checkbox" data-bulk-select='{"body":"table-latest-review-body"}' />
+                            </div>
+                        </th>
+                        <th class="sort align-middle border-end border-translucent" scope="col" style="min-width:110px;" data-sort="product">TYPE</th>
+                        <th class="sort align-middle border-end border-translucent" scope="col" data-sort="customer" style="min-width:100px;">DETAILS</th>
+                        <th class="sort align-middle border-end border-translucent" scope="col" data-sort="rating" style="min-width:100px;">STATUS</th>
+                        <th class="sort align-middle border-end border-translucent" scope="col" style="max-width:100px;" data-sort="review">STATUS DETAILS</th>
+                        <th class="sort align-middle border-end border-translucent" scope="col" style="max-width:100px;" data-sort="review">CREATED</th>
+                        <th class="sort align-middle border-end border-translucent" scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody class="list" id="table-latest-review-body-sync">
+                    <!-- Data will be inserted here by JavaScript -->
+                    <div class="spinner-border text-success" role="status" id="loading-spinner">
+                      <span class="visually-hidden">Loading...</span>
+                    
+                    </div>
+                </tbody>
+              </table>
+            
+            </div>
+            <div class="row align-items-center py-1">
+              <div class="pagination d-none"></div>
+              <div class="col d-flex fs-9">
+                <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info"></p><a class="fw-semibold" href="#!" data-list-view="*">View all<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a><a class="fw-semibold d-none" href="#!" data-list-view="less">View Less</a>
+              </div>
+              <div class="col-auto d-flex">
+
+                <button class="btn btn-link px-1 me-1" type="button" title="Previous" data-list-pagination="prev"><span class="fas fa-chevron-left me-2"></span>Previous</button>
+                <button class="btn btn-link px-1 ms-1" type="button" title="Next" data-list-pagination="next">Next<span class="fas fa-chevron-right ms-2"></span></button>
+              </div>
+            </div>
+          </div>
             
             
         </div>
@@ -430,6 +492,12 @@
 
     <!-- RENDER -->
     <script src="../render/sync_renderer.js"></script>
+    <script>
+      document.getElementById('refreshButton').addEventListener('click', () => {
+          // Refresh the page
+          window.location.reload();
+      });
+    </script>
     
 
   </body>

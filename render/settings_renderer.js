@@ -20,11 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                               <label for="add-property-wizardwizard-name">${settings.variable}</label>
                           </div>
                       </div>
-                     
-                      
                   </div>
-                  
-                  
                   <button class="btn btn-primary mt-5 w-100" type="submit">Save</button>
                   <button id="refreshButton" type="button" class="btn btn-sm btn-outline-info w-100 mt-3"><i class="fa-solid fa-arrows-rotate"></i> Refresh</button>
                   
@@ -40,8 +36,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById("edit-settings-details").addEventListener('submit', async (event) => {
           event.preventDefault();
           const api = document.getElementById("api").value;
-          
-        
           try {
               await window.api.updateSettings(api);
               console.log("Device area inserted successfully.");
