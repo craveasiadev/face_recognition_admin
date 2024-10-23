@@ -46,4 +46,7 @@ contextBridge.exposeInMainWorld('api', {
     deleteSyncRecord: (syncRecordId) => ipcRenderer.invoke('delete-sync-record', syncRecordId),
     getSyncRecord: () => ipcRenderer.invoke('get-sync-record'),
     removeOldSyncData: () => ipcRenderer.invoke('remove-sync-data-10-days-ago'),
+
+    //Restart App
+    restartApp: () => ipcRenderer.invoke('restartApp'),
 });

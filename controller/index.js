@@ -508,6 +508,11 @@ async function initializeApp() {
     } 
 }
 
+ipcMain.handle('restartApp', () => {
+    app.relaunch();  // Relaunch the app
+    app.quit();     // Exit the app
+});
+
 app.whenReady().then(initializeApp);
 
 app.on('window-all-closed', () => {

@@ -43,6 +43,78 @@ document.addEventListener('DOMContentLoaded', async () => {
             await window.api.removeOldSyncData()
             await window.api.removeUserRoleBased(2);
             // Function to fetch data from a single device
+            async function deleteOldUsers(device, payload) {
+                const url = `http://${device.device_ip}:8090/cgi-bin/js/person/findList`;
+            
+                try {
+                    // Fetch the list of users
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Basic ' + btoa('admin:' + device.communication_password)
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                    const result = await response.json();
+            
+                    if (result.code !== "000") {
+                        console.error("Error fetching users:", result.msg);
+                        return;
+                    }
+            
+                    const users = result.data;
+            
+                    // Get the current time in milliseconds
+                    const currentTime = Date.now();
+                    
+                    // Calculate the threshold for 3 days in milliseconds
+                    const threeDaysInMillis = 2 * 24 * 60 * 60 * 1000; // 3 days
+                    // const oneMinuteInMillis = 1 * 60 * 1000;
+                    // Filter users that were updated more than 3 days ago
+                    const oldUsers = users.filter(user => {
+                        const userUpdateTime = user.updateTime; // The update time from the API response
+                        console.log(userUpdateTime)
+                        console.log(currentTime)
+                        console.log(threeDaysInMillis)
+                        return (currentTime - userUpdateTime) > threeDaysInMillis;
+                    });
+            
+                    // If there are old users, prepare to delete them
+                    if (oldUsers.length > 0) {
+                        const snToDelete = oldUsers.map(user => user.sn); // Extract sn values
+                        
+                        // Prepare the payload
+                        const payload = {
+                            sn: snToDelete
+                        };
+            
+                        const deleteUsersUrl = `http://${device.device_ip}:8090/cgi-bin/js/person/delete`;
+                        // Send delete request
+                        const deleteResponse = await fetch(deleteUsersUrl, {
+                            method: 'POST', // Assuming the API accepts DELETE method
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Basic ' + btoa('admin:' + device.communication_password)
+                            },
+                            body: JSON.stringify(payload),
+                        });
+            
+                        const deleteResult = await deleteResponse.json();
+            
+                        if (deleteResponse.ok) {
+                            console.log("Successfully deleted users:", deleteResult);
+                        } else {
+                            console.error("Error deleting users:", deleteResult);
+                        }
+                    } else {
+                        console.log("No users to delete.");
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                }
+            }
+
             async function fetchDataFromDevice(device, payload) {
                 const url = `http://${device.device_ip}:8090/cgi-bin/js/person/findList`;
             
@@ -110,6 +182,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Use for...of to handle asynchronous fetching properly
                 for (const device of alldevices) {
                     const data = await fetchDataFromDevice(device, payload);
+                    await deleteOldUsers(device, payload);
             
                     if (data && data.length > 0) {
                         // console.log(data.length);

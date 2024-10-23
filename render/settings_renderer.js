@@ -25,9 +25,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                   <div class="row g-3">
                       <div class="col-md-12">
                           <div class="form-floating">
-                              <input class="form-control" type="text" name="autosync" id="autosync" placeholder="Device Key/SN" value="${autoSync.value}" />
-                              <label for="add-property-wizardwizard-name">${autoSync.variable}</label>
+                            <select class="form-select" name="autosync" id="autosync">
+                              <option value="off" ${autoSync.value === "1" ? "selected" : ""}>Off</option>
+                              <option value="3" ${autoSync.value === "3" ? "selected" : ""}>3 minutes</option>
+                              <option value="6" ${autoSync.value === "6" ? "selected" : ""}>6 minutes</option>
+                              <option value="9" ${autoSync.value === "9" ? "selected" : ""}>9 minutes</option>
+                              <option value="15" ${autoSync.value === "15" ? "selected" : ""}>15 minutes</option>
+                              <option value="30" ${autoSync.value === "30" ? "selected" : ""}>30 minutes</option>
+                              <option value="60" ${autoSync.value === "60" ? "selected" : ""}>1 hour</option>
+                            </select>
+                            <label for="autosync">${autoSync.variable}</label>
                           </div>
+                          
                       </div>
                   </div>
                   <button class="btn btn-primary mt-5 w-100" type="submit">Save</button>
@@ -46,18 +55,27 @@ document.addEventListener('DOMContentLoaded', async () => {
           event.preventDefault();
           const api = document.getElementById("api").value;
           const autosync = document.getElementById('autosync').value
+          console.log(autoSync)
           try {
               await window.api.updateSettings(api);
               await window.api.updateAutoSync(autosync);
               console.log("settings updated successfully.");
+
               // Add ?success to the current URL without refreshing the page
               const newUrl = `${window.location.pathname}&success=1`;
               window.history.replaceState(null, null, newUrl);
+              const restartModal = new bootstrap.Modal(document.getElementById('restart'), {
+                  keyboard: false
+              });
+              restartModal.show(); 
               // Optionally refresh the table or provide feedback to the user
           } catch (err) {
               console.error('Failed to update settings:', err);
           }
         });
 
+        document.getElementById("restartAppButton").addEventListener('click', () => {
+            window.api.restartApp(); // Call to restart the Electron app
+        });
 
 })
