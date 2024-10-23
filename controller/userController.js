@@ -260,3 +260,69 @@ ipcMain.handle('remove-users-role-based', (event, roleId) => {
         })
     })
 })
+
+
+//Count Total For Dashboard
+ipcMain.handle('get-total-users-visitor', () => {
+    return new Promise((resolve, reject) => {
+        db.all(`SELECT users.*, roles.role_name
+            FROM users
+            JOIN roles ON users.role_id = roles.id
+            WHERE role_id = 2`, (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                const totalUsers = rows.length; // Count total users (visitors)
+                resolve({ users: rows, totalUsers: totalUsers });
+            }
+        });
+    });
+});
+
+
+ipcMain.handle('get-total-users-employee', () => {
+    return new Promise((resolve, reject) => {
+        db.all(`SELECT users.*, roles.role_name
+            FROM users
+            JOIN roles ON users.role_id = roles.id
+            WHERE role_id = 1`, (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                const totalUsers = rows.length; // Count total users (visitors)
+                resolve({ users: rows, totalUsers: totalUsers });
+            }
+        });
+    });
+});
+
+ipcMain.handle('get-total-users-blacklist', () => {
+    return new Promise((resolve, reject) => {
+        db.all(`SELECT users.*, roles.role_name
+            FROM users
+            JOIN roles ON users.role_id = roles.id
+            WHERE role_id = 3`, (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                const totalUsers = rows.length; // Count total users (visitors)
+                resolve({ users: rows, totalUsers: totalUsers });
+            }
+        });
+    });
+});
+
+ipcMain.handle('get-total-devices', () => {
+    // Add this for logging the deviceId
+   return new Promise((resolve, reject) => {
+       db.all(`SELECT * FROM device`, (err, rows) => {
+           if (err) {
+               console.error("Database error:", err); // Add this for logging errors
+               reject(err);
+           } else {
+               const totalDevices = rows.length;
+               resolve({ devices: rows, totalDevices: totalDevices });
+           }
+       });
+   });
+});

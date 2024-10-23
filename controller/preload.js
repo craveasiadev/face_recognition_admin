@@ -1,4 +1,4 @@
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer, ipcMain } = require('electron');
 
 contextBridge.exposeInMainWorld('api', {
     
@@ -14,6 +14,7 @@ contextBridge.exposeInMainWorld('api', {
     deleteDevice: (deviceId) => ipcRenderer.invoke('delete-device', deviceId),
     updateDevice: (device_id, device_ip, device_key, device_name, device_area, device_entry) => ipcRenderer.invoke('update-device', { device_id, device_ip, device_key, device_name, device_area, device_entry }),
     updatePass: (deviceId, newPass) => ipcRenderer.invoke('update-device-pass', { deviceId, newPass }),
+    getTotalDevice: () => ipcRenderer.invoke('get-total-devices'),
 
     //Insert User
     insertUser: (name, username, email, phone, role, image, sn, card) => ipcRenderer.invoke('insert-user', { name, username, email, phone, role, image, sn, card }),
@@ -26,12 +27,15 @@ contextBridge.exposeInMainWorld('api', {
     getUserByCard: (card) => ipcRenderer.invoke('get-user-by-card', card),
     //User Employee
     getUsersEmployee: () => ipcRenderer.invoke('get-users-employee'),
+    getTotalUsersEmployee: () => ipcRenderer.invoke('get-total-users-employee'),
     
     //User Visitor
     getUsersVisitor: () => ipcRenderer.invoke('get-users-visitor'),
+    getTotalUsersVisitor: () => ipcRenderer.invoke('get-total-users-visitor'),
 
     //User Blacklist
     getUsersBlacklist: () => ipcRenderer.invoke('get-users-blacklist'),
+    getTotalUsersBlacklist: () => ipcRenderer.invoke('get-total-users-blacklist'),
 
     //Get device by device area
     getDeviceByArea: (deviceId) => ipcRenderer.invoke('get-device-by-area', deviceId), 
