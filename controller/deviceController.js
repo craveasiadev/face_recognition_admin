@@ -149,3 +149,17 @@ ipcMain.handle('update-device-pass', (event, updatedPass) => {
         });
     });
 });
+
+ipcMain.handle('delete-device-manual', (event, deviceId) => {
+    return new Promise((resolve, reject) => {
+        db.run(`
+            DELETE FROM device where id = ?
+        `, deviceId, function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve({success : true, changes : this.changes});
+            }
+        });
+    });
+});

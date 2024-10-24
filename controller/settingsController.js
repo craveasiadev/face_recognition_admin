@@ -3,7 +3,7 @@ const db = require('../models/db');
 
 ipcMain.handle('get-settings', () => {
     return new Promise((resolve, reject) => {
-        db.get("SELECT * FROM settings WHERE id = 1", (err, rows) => {
+        db.get("SELECT * FROM settings WHERE variable = 'api_url'", (err, rows) => {
             if (err) {
                 reject(err);
             } else {
@@ -15,7 +15,7 @@ ipcMain.handle('get-settings', () => {
 
 ipcMain.handle('get-auto-sync', () => {
     return new Promise((resolve, reject) => {
-        db.get("SELECT * FROM settings WHERE id = 2", (err, rows) => {
+        db.get("SELECT * FROM settings WHERE variable = 'auto_sync'", (err, rows) => {
             if (err) {
                 reject(err);
             } else {
@@ -32,7 +32,7 @@ ipcMain.handle('update-settings', (event, updatedSettings) => {
         db.run(`
             UPDATE settings
             SET value = ?
-            WHERE id = 1
+            WHERE variable = 'api_url'
         `, [api], function(err) {
             if (err) {
                 reject(err);
@@ -50,7 +50,7 @@ ipcMain.handle('update-auto-sync', (event, updatedAutoSync) => {
         db.run(`
             UPDATE settings
             SET value = ?
-            WHERE id = 2
+            WHERE variable = 'auto_sync'
         `, [autosync], function(err) {
             if (err) {
                 reject(err);

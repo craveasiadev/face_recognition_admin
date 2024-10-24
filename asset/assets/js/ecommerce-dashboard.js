@@ -2011,27 +2011,24 @@
   /*                             Echarts Total Sales                            */
   /* -------------------------------------------------------------------------- */
 
-  const totalSalesChartInit = () => {
+  const totalSalesChartInit = async () => {
+    const employeeData =  await window.api.getUsersEmployeSummary();
+    const visitorData = await window.api.getUsersVisitorSummary();
+  
+    // Prepare the data for the chart
+    const employeeCounts = employeeData.map(entry => entry.count);
+    const visitorCounts = visitorData.map(entry => entry.count);
+    const dateData = employeeData.map(entry => window.dayjs(entry.date).format('YYYY-MM-DD'));
     const { getColor, getData, getDates } = window.phoenix.utils;
     const $totalSalesChart = document.querySelector('.echart-total-sales-chart');
 
     // getItemFromStore('phoenixTheme')
 
-    const dates = getDates(
-      new Date('5/1/2022'),
-      new Date('5/30/2022'),
-      1000 * 60 * 60 * 24
-    );
-
-    const currentMonthData = [
-      100, 200, 300, 300, 300, 250, 200, 200, 200, 200, 200, 500, 500, 500, 600,
-      700, 800, 900, 1000, 1100, 850, 600, 600, 600, 400, 200, 200, 300, 300, 300
-    ];
-
-    const prevMonthData = [
-      200, 200, 100, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 200, 400, 600,
-      600, 600, 800, 1000, 700, 400, 450, 500, 600, 700, 650, 600, 550
-    ];
+    const minDate = window.dayjs(Math.min(...visitorData.map(entry => new Date(entry.date).getTime()))).toDate();
+    const maxDate = window.dayjs(Math.max(...visitorData.map(entry => new Date(entry.date).getTime()))).toDate();
+    
+    // Generate the dates between the min and max dates
+    const dates = getDates(minDate, maxDate, 1000 * 60 * 60 * 24); // 1 day interval
 
     const tooltipFormatter = params => {
       const currentDate = window.dayjs(params[0].axisValue);
@@ -2083,7 +2080,7 @@
             data: dates,
             axisLabel: {
               formatter: value => window.dayjs(value).format('DD MMM'),
-              interval: 13,
+              interval: 'auto',
               showMinLabel: true,
               showMaxLabel: false,
               color: getColor('secondary-color'),
@@ -2157,7 +2154,7 @@
             // data: Array.from(Array(30).keys()).map(() =>
             //   getRandomNumber(100, 300)
             // ),
-            data: currentMonthData,
+            data: employeeCounts,
             showSymbol: false,
             symbol: 'circle',
             zlevel: 2
@@ -2168,7 +2165,7 @@
             // data: Array.from(Array(30).keys()).map(() =>
             //   getRandomNumber(100, 300)
             // ),
-            data: prevMonthData,
+            data: visitorCounts,
             // symbol: 'none',
             lineStyle: {
               type: 'dashed',

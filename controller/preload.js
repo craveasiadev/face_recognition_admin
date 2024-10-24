@@ -28,10 +28,12 @@ contextBridge.exposeInMainWorld('api', {
     //User Employee
     getUsersEmployee: () => ipcRenderer.invoke('get-users-employee'),
     getTotalUsersEmployee: () => ipcRenderer.invoke('get-total-users-employee'),
+    getUsersEmployeSummary: () => ipcRenderer.invoke('get-users-employee-dashboard'),
     
     //User Visitor
     getUsersVisitor: () => ipcRenderer.invoke('get-users-visitor'),
     getTotalUsersVisitor: () => ipcRenderer.invoke('get-total-users-visitor'),
+    getUsersVisitorSummary: () => ipcRenderer.invoke('get-users-visitor-dashboard'),
 
     //User Blacklist
     getUsersBlacklist: () => ipcRenderer.invoke('get-users-blacklist'),
@@ -51,6 +53,16 @@ contextBridge.exposeInMainWorld('api', {
     getSyncRecord: () => ipcRenderer.invoke('get-sync-record'),
     removeOldSyncData: () => ipcRenderer.invoke('remove-sync-data-10-days-ago'),
 
+    //User Record
+    insertUserRecord: (personName, cardNo, personSn, openDoorFlag, strangerFlag, role, createTime, checkImgUrl) => ipcRenderer.invoke('insert-user-record', {personName, cardNo, personSn, openDoorFlag, strangerFlag, role, createTime, checkImgUrl}),
+    deleteUserRecord: (userRecordId) => ipcRenderer.invoke('delete-user-record', userRecordId),
+    getUserRecord: () => ipcRenderer.invoke('get-user-record'),
+    removeUserRecordRoleBased: (role) => ipcRenderer.invoke('remove-user-record-role-based', role),
+
     //Restart App
     restartApp: () => ipcRenderer.invoke('restartApp'),
+
+    //manual
+    deleteDeviceManual: (deviceId) => ipcRenderer.invoke('delete-device-manual', deviceId),
+
 });

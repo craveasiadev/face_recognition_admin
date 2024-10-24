@@ -33,10 +33,21 @@ document.addEventListener('DOMContentLoaded', async () => {
             const data = result.data;  // The array of visitor records
 
             // For each record in the data array, append a row to the table
-            data.forEach((record) => {
+            data.forEach(async (record) => {
                 console.log(record.checkImgUrl)
                 const faceFlagText = record.openDoorFlag === 1 ? 'YES' : 'NO';
                 const stranger = record.strangerFlag === 1 ? 'Stranger' : 'Registered Visitor'
+                await window.api.removeUserRecordRoleBased(2)
+                await window.api.insertUserRecord(
+                    record.personName || 'Unknown',
+                    record.cardNo || 'N/A',
+                    record.personSn || 'N/A',
+                    faceFlagText,
+                    stranger,
+                    2,
+                    record.createTime,
+                    record.checkImgUrl
+                )
                 const row = `
                     <tr>
                         <td class="white-space-nowrap fs-9 ps-0 align-middle">

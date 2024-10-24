@@ -326,3 +326,31 @@ ipcMain.handle('get-total-devices', () => {
        });
    });
 });
+
+ipcMain.handle('get-users-employee-dashboard', (event) => {
+    return new Promise((resolve, reject) => {
+        db.all(`
+            SELECT COUNT(*) as count, DATE(created_at) as date
+            FROM users
+            WHERE role_id = 1 -- Employees
+            GROUP BY DATE(created_at)
+        `, (err, rows) => {
+            if (err) reject(err);
+            else resolve(rows);
+        });
+    });
+});
+
+ipcMain.handle('get-users-visitor-dashboard', (event) => {
+    return new Promise((resolve, reject) => {
+        db.all(`
+            SELECT COUNT(*) as count, DATE(created_at) as date
+            FROM users
+            WHERE role_id = 2 -- Visitors
+            GROUP BY DATE(created_at)
+        `, (err, rows) => {
+            if (err) reject(err);
+            else resolve(rows);
+        });
+    });
+});
