@@ -1,6 +1,12 @@
 
 //Add Device
 document.addEventListener('DOMContentLoaded', async () => {
+
+    function isValidIpAddress(ip) {
+        const ipPattern = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+        return ipPattern.test(ip);
+    }
+
     document.getElementById("deviceForm").addEventListener('submit', async (event) => {
 
         event.preventDefault();
@@ -11,6 +17,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         const password = document.getElementById("password").value;
         const device_entry = document.getElementById("device_entry").value;
     
+        if (!isValidIpAddress(device_ip)) {
+            showValidateAlert("Please enter a valid IP address (e.g., 192.168.1.1).", "danger");
+            return; // Stop the form from submitting if the IP is invalid
+        }
+
+        if (device_name === "") {
+            showValidateAlert("Device name cannot be empty", "danger");
+            return;
+        }
+
+        if (device_area === "") {
+            showValidateAlert("Device area cannot be empty", "danger");
+            return;
+        }
+
+        if (password === "") {
+            showValidateAlert("Communication password cannot be empty", "danger");
+            return;
+        }
+
         try {
             await window.api.insertDevice(device_ip, device_key, device_name, device_area, password, device_entry);
             console.log("Device area inserted successfully.");
@@ -272,6 +298,24 @@ document.addEventListener('click', async (event) => {
 // Function to show alert messages
 function showAlert(message, type) {
     const alertContainer = document.getElementById('alert-container');
+    
+    alertContainer.innerHTML = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    `;
+    
+    alertContainer.style.display = 'block';
+    
+    // Automatically hide the alert after 3 seconds
+    setTimeout(() => {
+        alertContainer.style.display = 'none';
+    }, 3000);
+}
+
+function showValidateAlert(message, type) {
+    const alertContainer = document.getElementById('validate-alert-container');
     
     alertContainer.innerHTML = `
         <div class="alert alert-${type} alert-dismissible fade show" role="alert">
