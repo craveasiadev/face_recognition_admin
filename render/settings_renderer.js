@@ -2,6 +2,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     const settings = await window.api.getSettings();
     const autoSync = await window.api.getAutoSync();
+    const apiSync = await window.api.getApiSync();
+    const apiUsername = await window.api.getApiUsername();
+    const apiPassword = await window.api.getApiPassword();
 
     const settingsDetails = document.getElementById('settings-details');
 
@@ -22,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                           </div>
                       </div>
                   </div>
-                  <div class="row g-3">
+                  <div class="row g-3 mb-2">
                       <div class="col-md-12">
                           <div class="form-floating">
                             <select class="form-select" name="autosync" id="autosync">
@@ -37,6 +40,34 @@ document.addEventListener('DOMContentLoaded', async () => {
                             <label for="autosync">${autoSync.variable}</label>
                           </div>
                           
+                      </div>
+                  </div>
+                  <div class="row g-3 mb-2">
+                      <div class="col-md-12">
+                          <div class="form-floating">
+                            <select class="form-select" name="API Sync" id="apisync">
+                              <option value="allow" ${autoSync.value === "allow" ? "selected" : ""}>Allow</option>
+                              <option value="off" ${apiSync.value === "off" ? "selected" : ""}>Off</option>
+                            </select>
+                            <label for="apisync">${apiSync.variable}</label>
+                          </div>
+                          
+                      </div>
+                  </div>
+                  <div class="row g-3 mb-2">
+                      <div class="col-md-12">
+                          <div class="form-floating">
+                              <input class="form-control" type="text" name="apiUsername" id="apiUsername" placeholder="Device Key/SN" value="${apiUsername.value}" />
+                              <label for="add-property-wizardwizard-name">${apiUsername.variable}</label>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="row g-3 mb-2">
+                      <div class="col-md-12">
+                          <div class="form-floating">
+                              <input class="form-control" type="text" name="apiPassword" id="apiPassword" placeholder="Device Key/SN" value="${apiPassword.value}" />
+                              <label for="add-property-wizardwizard-name">${apiPassword.variable}</label>
+                          </div>
                       </div>
                   </div>
                   <button class="btn btn-primary mt-5 w-100" type="submit">Save</button>
@@ -55,10 +86,16 @@ document.addEventListener('DOMContentLoaded', async () => {
           event.preventDefault();
           const api = document.getElementById("api").value;
           const autosync = document.getElementById('autosync').value
+          const apisync = document.getElementById('apisync').value
+          const apiUsername = document.getElementById('apiUsername').value
+          const apiPassword = document.getElementById('apiPassword').value
           console.log(autoSync)
           try {
               await window.api.updateSettings(api);
               await window.api.updateAutoSync(autosync);
+              await window.api.updateApiSync(apisync);
+              await window.api.updateApiUsername(apiUsername);
+              await window.api.updateAapiPassword(apiPassword);
               console.log("settings updated successfully.");
 
               // Add ?success to the current URL without refreshing the page

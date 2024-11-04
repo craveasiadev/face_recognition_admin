@@ -25,6 +25,42 @@ ipcMain.handle('get-auto-sync', () => {
     });
 });
 
+ipcMain.handle('get-api-sync', () => {
+    return new Promise((resolve, reject) => {
+        db.get("SELECT * FROM settings WHERE variable = 'api_sync'", (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+});
+
+ipcMain.handle('get-api-username', () => {
+    return new Promise((resolve, reject) => {
+        db.get("SELECT * FROM settings WHERE variable = 'api_username'", (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+});
+
+ipcMain.handle('get-api-password', () => {
+    return new Promise((resolve, reject) => {
+        db.get("SELECT * FROM settings WHERE variable = 'api_password'", (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+});
+
 ipcMain.handle('update-settings', (event, updatedSettings) => {
     const { api } = updatedSettings;
     
@@ -52,6 +88,60 @@ ipcMain.handle('update-auto-sync', (event, updatedAutoSync) => {
             SET value = ?
             WHERE variable = 'auto_sync'
         `, [autosync], function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve({ success: true, changes: this.changes });
+            }
+        });
+    });
+});
+
+ipcMain.handle('update-api-sync', (event, updatedApiSync) => {
+    const { apisync } = updatedApiSync;
+    
+    return new Promise((resolve, reject) => {
+        db.run(`
+            UPDATE settings
+            SET value = ?
+            WHERE variable = 'api_sync'
+        `, [apisync], function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve({ success: true, changes: this.changes });
+            }
+        });
+    });
+});
+
+ipcMain.handle('update-api-username', (event, updatedApiUsername) => {
+    const { apiusername } = updatedApiUsername;
+    
+    return new Promise((resolve, reject) => {
+        db.run(`
+            UPDATE settings
+            SET value = ?
+            WHERE variable = 'api_username'
+        `, [apiusername], function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve({ success: true, changes: this.changes });
+            }
+        });
+    });
+});
+
+ipcMain.handle('update-api-password', (event, updatedApiPassword) => {
+    const { apipassword } = updatedApiPassword;
+    
+    return new Promise((resolve, reject) => {
+        db.run(`
+            UPDATE settings
+            SET value = ?
+            WHERE variable = 'api_username'
+        `, [apipassword], function(err) {
             if (err) {
                 reject(err);
             } else {
