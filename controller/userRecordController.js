@@ -43,6 +43,18 @@ ipcMain.handle('get-user-record', () => {
     })
 })
 
+ipcMain.handle('get-user-record-visitor', () => {
+    return new Promise((resolve, reject) => {
+        db.all("SELECT * FROM user_record where role = 2", (err, rows) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(rows)
+            }
+        })
+    })
+})
+
 ipcMain.handle('remove-user-record-role-based', (event, role) => {
     return new Promise((resolve, reject) => {
         db.run(`

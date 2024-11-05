@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // activeQR.focus();
     const settings = await window.api.getSettings();
+    const apiSync = await window.api.getApiSync();
+    const apiUsername = await window.api.getApiUsername();
+    const apiPasword = await window.api.getApiPassword();
 
     async function loginAndGetToken(email, password) {
         try {
@@ -39,6 +42,66 @@ document.addEventListener('DOMContentLoaded', async () => {
             let allUser = [];
             let indexCount = 1;
             let hasData = true;
+
+            const payloadVisitor = {
+                personType: 2,
+                index: 1,
+                length: 20,
+                order: 0
+            };
+
+            async function convertImageToBase64(url) {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result.split(',')[1]); // Extract base64 string
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                });
+            }
+
+            const devicesRecordSync = await window.api.getDevice();
+
+            devicesRecordSync.map(async (device) => {
+                const recordURL = `http://${device.device_ip}:8090/cgi-bin/js/record/findList`;
+    
+                const response = await fetch(recordURL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Basic ' + btoa('admin:' + device.communication_password)
+                    },
+                    body: JSON.stringify(payloadVisitor)
+                });
+    
+                if (!response.ok) {
+                    throw new Error(`Error with device ${device.device_ip}`);
+                }
+    
+                const result = await response.json();
+                const data = result.data;  // The array of visitor records
+    
+                // For each record in the data array, append a row to the table
+                data.forEach(async (record) => {
+                    console.log(record.checkImgUrl)
+                    const faceFlagText = record.openDoorFlag === 1 ? 'YES' : 'NO';
+                    const stranger = record.strangerFlag === 1 ? 'Stranger' : 'Registered Visitor'
+                    await window.api.removeUserRecordRoleBased(2)
+                    const base64Image = await convertImageToBase64(record.checkImgUrl);
+                    await window.api.insertUserRecord(
+                        record.personName || 'Unknown',
+                        record.cardNo || 'N/A',
+                        record.personSn || 'N/A',
+                        faceFlagText,
+                        stranger,
+                        2,
+                        record.createTime,
+                        base64Image
+                    )
+                    
+                });
+            });
             
             await window.api.removeOldSyncData()
             // await window.api.removeUserRoleBased(2);
@@ -234,10 +297,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 record.cardNo
                             );
                             console.log(`Inserted user: ${record.name}`);
+                            refreshTable()
                             // await window.api.insertSyncRecordData("fetch users", "get all visitor from device", "success", `success insert ${record.name}`)
                         } else {
                             console.log(`User with card number ${record.cardNo} already exists, skipping insertion.`);
                             await window.api.insertSyncRecordData("fetch users", "get all visitor from device", "skipped", `${record.name} already exists in the database`)
+                            refreshTable()
                         }
                     } else {
                         console.log(`User ${record.name} has type ${record.type}, skipping insertion.`);
@@ -290,147 +355,151 @@ document.addEventListener('DOMContentLoaded', async () => {
                 await checkAndInsertUserEmployee(record);
             });
 
-            //Sync data to laravel API side
-            const token = await loginAndGetToken('shasweendran@craveasia.com', '12345678');
-            if (!token) {
-                console.error('Failed to retrieve token.');
-                return;
-            }
-    
-            
-            const users = await window.api.getUsersVisitor();
-
-            const userData = users.map(user => {
-                
-                const [namePart, orderIdPart] = user.name.split(' '); // Split by space
-            
-                return {
-                    role_id: user.role_id,
-                    name: namePart,         
-                    order_detail_id: orderIdPart,  
-                    timestamp: user.card_number,
-                    status: 0,
-                    card_number: user.card_number
-                };
-            });
-
-            const apiResponse = await fetch(`${settings.value}/user-registration-store`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`  
-                },
-                body: JSON.stringify({ users: userData })  
-            });
-
-            let apiResult;
-
-            try {
-                // Attempt to parse the JSON response
-                apiResult = await apiResponse.json();
-            } catch (error) {
-                console.error('Failed to parse JSON:', error);
-                syncDiv.innerHTML = 'Failed to parse server response.';
-                return;
-            }
-            
-            // Check if the response was successful (status 2xx)
-            if (apiResponse.ok) {
-                console.log('Sync successful', apiResult);
-                for (const user of apiResult.successfulRegistrations) {
-                    await window.api.insertSyncRecordData(
-                        "sync users", 
-                        "sync all visitors from database into server via API", 
-                        "success", 
-                        `Success to sync ${user.name} with order detailID ${user.order_detail_id}`
-                    );
+            console.log(apiSync.value)
+            if ( apiSync.value == "allow") {
+                //Sync data to laravel API side
+                const token = await loginAndGetToken(apiUsername.value, apiPasword.value);
+                if (!token) {
+                    console.error('Failed to retrieve token.');
+                    return;
                 }
-                syncDiv.innerHTML = JSON.stringify(apiResult.message, null, 2);
-                refreshTable();
-            } else {
-                // If not successful (status not in 2xx), display the error message
-                console.error('Sync failed:', apiResult);
-                let apiErrorMsg = JSON.stringify(apiResult.message || 'Unknown error', null, 2);
-                await window.api.insertSyncRecordData("sync users", "sync all visitors from database into server via API", "failed", `failed to sync ${users.name} with order detailID ${userData.order_detail_id} due to ${apiErrorMsg}`)
-                syncDiv.innerHTML = apiErrorMsg
-                refreshTable();
-            }
+               
+                
+                const users = await window.api.getUsersVisitor();
+               
+                const userData = users.map(user => {
+                    
+                    const [namePart, orderIdPart] = user.name.split(' '); // Split by space
+                
+                    return {
+                        role_id: user.role_id,
+                        name: namePart,         
+                        order_detail_id: orderIdPart,  
+                        timestamp: user.card_number,
+                        status: 0,
+                        card_number: user.card_number
+                    };
+                });
+               
+                const apiResponse = await fetch(`${settings.value}/user-registration-store`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`  
+                    },
+                    body: JSON.stringify({ users: userData })  
+                });
+               
+                let apiResult;
+               
+                try {
+                    // Attempt to parse the JSON response
+                    apiResult = await apiResponse.json();
+                } catch (error) {
+                    console.error('Failed to parse JSON:', error);
+                    syncDiv.innerHTML = 'Failed to parse server response.';
+                    return;
+                }
+                
+                // Check if the response was successful (status 2xx)
+                if (apiResponse.ok) {
+                    console.log('Sync successful', apiResult);
+                    for (const user of apiResult.successfulRegistrations) {
+                        await window.api.insertSyncRecordData(
+                            "sync users", 
+                            "sync all visitors from database into server via API", 
+                            "success", 
+                            `Success to sync ${user.name} with order detailID ${user.order_detail_id}`
+                        );
+                    }
+                    syncDiv.innerHTML = JSON.stringify(apiResult.message, null, 2);
+                    refreshTable();
+                } else {
+                    // If not successful (status not in 2xx), display the error message
+                    console.error('Sync failed:', apiResult);
+                    let apiErrorMsg = JSON.stringify(apiResult.message || 'Unknown error', null, 2);
+                    await window.api.insertSyncRecordData("sync users", "sync all visitors from database into server via API", "failed", `failed to sync ${users.name} with order detailID ${userData.order_detail_id} due to ${apiErrorMsg}`)
+                    syncDiv.innerHTML = apiErrorMsg
+                    refreshTable();
+                }
+               
+                //For Device Record
+                const device_area = await window.api.getDeviceArea();
+               
+                const device_area_data = device_area.map(area => {
+                
+                    return {
+                        area_name: area.area_name,
+                        sort: area.sort,         
+                    };
+                });
+               
+                const devices = await window.api.getDevice();
+               
+                const devices_data = devices.map(device => {
+                
+                    return {
+                        device_ip: device.device_ip,
+                        device_sn: device.device_key,
+                        device_name: device.device_name,
+                        area_id: device.device_area_id,
+                        communication_password: device.communication_password,
+                        device_entry: device.device_entry,
+                        person_count: "0",
+               
+                    };
+                });
+               
+                const user_records = await window.api.getUserRecord();
+               
+                const user_records_data = user_records.map(record => {
+                
+                    return {
+                        person_name: record.personName,
+                        card_no: record.cardNo,
+                        person_sn: record.personSn,
+                        open_door_flag: record.openDoorFlag,
+                        stranger_flag: record.strangerFlag,
+                        role_id: record.role,
+                        create_time: record.createTime,
+                        image: record.checkImgUrl,
+               
+                    };
+                });
+               
+                const apiResponseDeviceRecord = await fetch(`${settings.value}/device-record-store`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`  
+                    },
+                    body: JSON.stringify({ 
+                        area: device_area_data,
+                        device: devices_data,
+                        gate_record:  user_records_data
+                    })  
+                });
+               
+                let apiResultDeviceRecord;
+               
+                try {
+                    // Attempt to parse the JSON response
+                    apiResultDeviceRecord = await apiResponseDeviceRecord.json();
+                } catch (error) {
+                    console.error('Failed to parse JSON:', error);
+                    return;
+                }
+                
+                // Check if the response was successful (status 2xx)
+                if (apiResponseDeviceRecord.ok) {
+                    console.log('Sync successful', apiResultDeviceRecord);
+                    refreshTable();
+                } else {
+                    // If not successful (status not in 2xx), display the error message
+                    console.error('Sync failed:', apiResultDeviceRecord);
+                    refreshTable();
+                }
 
-            //For Device Record
-            const device_area = await window.api.getDeviceArea();
-
-            const device_area_data = device_area.map(area => {
-            
-                return {
-                    area_name: area.area_name,
-                    sort: area.sort,         
-                };
-            });
-
-            const devices = await window.api.getDevice();
-
-            const devices_data = devices.map(device => {
-            
-                return {
-                    device_ip: device.device_ip,
-                    device_sn: device.device_key,
-                    device_name: device.device_name,
-                    area_id: device.device_area_id,
-                    communication_password: device.communication_password,
-                    device_entry: device.device_entry,
-                    person_count: "0",
-         
-                };
-            });
-
-            const user_records = await window.api.getUserRecord();
-
-            const user_records_data = user_records.map(record => {
-            
-                return {
-                    person_name: record.personName,
-                    card_no: record.cardNo,
-                    person_sn: record.personSn,
-                    open_door_flag: record.openDoorFlag,
-                    stranger_flag: record.strangerFlag,
-                    role_id: record.role,
-                    create_time: record.createTime,
-                    image: record.checkImgUrl,
-         
-                };
-            });
-
-            const apiResponseDeviceRecord = await fetch(`${settings.value}/device-record-store`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`  
-                },
-                body: JSON.stringify({ 
-                    area: device_area_data,
-                    device: devices_data,
-                    gate_record:  user_records_data
-                })  
-            });
-
-            let apiResultDeviceRecord;
-
-            try {
-                // Attempt to parse the JSON response
-                apiResultDeviceRecord = await apiResponseDeviceRecord.json();
-            } catch (error) {
-                console.error('Failed to parse JSON:', error);
-                return;
-            }
-            
-            // Check if the response was successful (status 2xx)
-            if (apiResponseDeviceRecord.ok) {
-                console.log('Sync successful', apiResultDeviceRecord);
-                refreshTable();
-            } else {
-                // If not successful (status not in 2xx), display the error message
-                console.error('Sync failed:', apiResultDeviceRecord);
-                refreshTable();
             }
 
         } catch (error) {

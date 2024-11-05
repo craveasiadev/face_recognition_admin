@@ -63,6 +63,7 @@ contextBridge.exposeInMainWorld('api', {
     insertUserRecord: (personName, cardNo, personSn, openDoorFlag, strangerFlag, role, createTime, checkImgUrl) => ipcRenderer.invoke('insert-user-record', {personName, cardNo, personSn, openDoorFlag, strangerFlag, role, createTime, checkImgUrl}),
     deleteUserRecord: (userRecordId) => ipcRenderer.invoke('delete-user-record', userRecordId),
     getUserRecord: () => ipcRenderer.invoke('get-user-record'),
+    getUserRecordVisitor: () => ipcRenderer.invoke('get-user-record-visitor'),
     removeUserRecordRoleBased: (role) => ipcRenderer.invoke('remove-user-record-role-based', role),
 
     //Restart App
