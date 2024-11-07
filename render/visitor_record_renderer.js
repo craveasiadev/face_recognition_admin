@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </td>
                     <td class="align-middle border-end border-translucent">
                         <a href="#" data-bs-toggle="modal" data-bs-target="#${record.id}">
-                           <img src="${record.checkImgUrl}" alt="Snapshot" width="80" height="80" style="border-radius: 10%" />
+                           <img src="data:image/jpeg;base64,${record.checkImgUrl}" alt="Snapshot" width="80" height="80" style="border-radius: 10%" />
                         </a>
                         <div class="modal fade" id="${record.id}" tabindex="-1" aria-labelledby="${record.id}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
@@ -133,8 +133,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                               <button class="btn btn-close p-1" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <a href="${record.checkImgUrl}" class="btn btn-info mb-3 w-100" download>Save Image</a>
-                                <img src="${record.checkImgUrl}" alt="Snapshot" class="img-fluid" />
+                                <a href="data:image/jpeg;base64,${record.checkImgUrl}" class="btn btn-info mb-3 w-100" download>Save Image</a>
+                                <img src="data:image/jpeg;base64,${record.checkImgUrl}" alt="Snapshot" class="img-fluid" />
                             </div>
                           </div>
                         </div>

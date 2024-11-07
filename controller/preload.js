@@ -64,7 +64,11 @@ contextBridge.exposeInMainWorld('api', {
     deleteUserRecord: (userRecordId) => ipcRenderer.invoke('delete-user-record', userRecordId),
     getUserRecord: () => ipcRenderer.invoke('get-user-record'),
     getUserRecordVisitor: () => ipcRenderer.invoke('get-user-record-visitor'),
+    getUserRecordEmployee: () => ipcRenderer.invoke('get-user-record-employee'),
+    getUserRecordBlacklist: () => ipcRenderer.invoke('get-user-record-blacklist'),
     removeUserRecordRoleBased: (role) => ipcRenderer.invoke('remove-user-record-role-based', role),
+    getUsersVisitorRecordSummary: () => ipcRenderer.invoke('get-users-visitor-record-dashboard'),
+    getUsersEmployeeRecordSummary: () => ipcRenderer.invoke('get-users-employee-dashboard'),
 
     //Restart App
     restartApp: () => ipcRenderer.invoke('restartApp'),

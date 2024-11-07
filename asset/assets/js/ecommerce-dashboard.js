@@ -2012,9 +2012,9 @@
   /* -------------------------------------------------------------------------- */
 
   const totalSalesChartInit = async () => {
-    const employeeData =  await window.api.getUsersEmployeSummary();
-    const visitorData = await window.api.getUsersVisitorSummary();
-  
+    const employeeData =  await window.api.getUsersEmployeeRecordSummary();
+    const visitorData = await window.api.getUsersVisitorRecordSummary();
+    console.log(visitorData)
     // Prepare the data for the chart
     const employeeCounts = employeeData.map(entry => entry.count);
     const visitorCounts = visitorData.map(entry => entry.count);
@@ -2074,6 +2074,14 @@
           formatter: tooltipFormatter,
           extraCssText: 'z-index: 1000'
         },
+        legend: {
+          data: ['Employees', 'Visitors'],  // Add labels for each series
+          textStyle: {
+              color: getColor('secondary')
+          },
+          left: 'center',
+          top: 'top',
+      },
         xAxis: [
           {
             type: 'category',
@@ -2149,41 +2157,34 @@
         },
         series: [
           {
-            name: 'd',
-            type: 'line',
-            // data: Array.from(Array(30).keys()).map(() =>
-            //   getRandomNumber(100, 300)
-            // ),
-            data: employeeCounts,
-            showSymbol: false,
-            symbol: 'circle',
-            zlevel: 2
+              name: 'Employees',  // Label for employee data
+              type: 'line',
+              data: employeeCounts,
+              showSymbol: false,
+              symbol: 'circle',
+              zlevel: 2
           },
           {
-            name: 'e',
-            type: 'line',
-            // data: Array.from(Array(30).keys()).map(() =>
-            //   getRandomNumber(100, 300)
-            // ),
-            data: visitorCounts,
-            // symbol: 'none',
-            lineStyle: {
-              type: 'dashed',
-              width: 1,
-              color: getColor('info')
-            },
-            showSymbol: false,
-            symbol: 'circle',
-            zlevel: 1
+              name: 'Visitors',  // Label for visitor data
+              type: 'line',
+              data: visitorCounts,
+              lineStyle: {
+                  type: 'dashed',
+                  width: 1,
+                  color: getColor('warning')
+              },
+              showSymbol: false,
+              symbol: 'circle',
+              zlevel: 1
           }
-        ],
-        grid: {
+      ],
+      grid: {
           right: 2,
           left: 5,
           bottom: '20px',
-          top: '2%',
+          top: '10%',  // Adjusted to make room for the legend
           containLabel: false
-        },
+      },
         animation: false
       });
       echartSetOption(chart, userOptions, getDefaultOptions);

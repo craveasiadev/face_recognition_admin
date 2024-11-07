@@ -500,6 +500,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     refreshTable();
                 }
 
+            } else {
+                syncDiv.innerHTML = "success"
             }
 
         } catch (error) {

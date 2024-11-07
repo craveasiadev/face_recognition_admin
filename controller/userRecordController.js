@@ -55,6 +55,30 @@ ipcMain.handle('get-user-record-visitor', () => {
     })
 })
 
+ipcMain.handle('get-user-record-employee', () => {
+    return new Promise((resolve, reject) => {
+        db.all("SELECT * FROM user_record where role = 1", (err, rows) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(rows)
+            }
+        })
+    })
+})
+
+ipcMain.handle('get-user-record-blacklist', () => {
+    return new Promise((resolve, reject) => {
+        db.all("SELECT * FROM user_record where role = 3", (err, rows) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(rows)
+            }
+        })
+    })
+})
+
 ipcMain.handle('remove-user-record-role-based', (event, role) => {
     return new Promise((resolve, reject) => {
         db.run(`
@@ -68,3 +92,33 @@ ipcMain.handle('remove-user-record-role-based', (event, role) => {
         })
     })
 })
+
+ipcMain.handle('get-users-visitor-record-dashboard', (event) => {
+    return new Promise((resolve, reject) => {
+        db.all(`
+            SELECT COUNT(*) as count, 
+                   DATE(createTime / 1000, 'unixepoch') as date -- Convert createTime to a date format
+            FROM user_record
+            WHERE role = 2 -- Visitors
+            GROUP BY DATE(createTime / 1000, 'unixepoch') -- Group by the date portion of createTime
+        `, (err, rows) => {
+            if (err) reject(err);
+            else resolve(rows);
+        });
+    });
+});
+
+
+ipcMain.handle('get-users-employee-record-dashboard', (event) => {
+    return new Promise((resolve, reject) => {
+        db.all(`
+            SELECT COUNT(*) as count, DATE(created_at) as date
+            FROM user_record
+            WHERE role = 1 -- Employee
+            GROUP BY DATE(created_at)
+        `, (err, rows) => {
+            if (err) reject(err);
+            else resolve(rows);
+        });
+    });
+});
