@@ -40,15 +40,77 @@ document.addEventListener('DOMContentLoaded', async () => {
                                    <span class="sr-only">Loading...</span>
                                  </div>`;
             let allUser = [];
+            let allRecords = [];
             let indexCount = 1;
             let hasData = true;
+            let hasRecords = true;
+            let recordsCount = 1;
 
-            const payloadVisitor = {
-                personType: 2,
-                index: 1,
-                length: 20,
-                order: 0
-            };
+            async function FetchRecordsFromDevice(device, payload) {
+                const recordURL = `http://${device.device_ip}:8090/cgi-bin/js/record/findList`;
+    
+                try {
+                    const response = await fetch(recordURL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Basic ' + btoa('admin:' + device.communication_password)
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json();
+                    return result.data;
+                    
+                } catch (error) {
+                    console.error(`Error fetching data from ${device.device_ip}:`, error);
+                    return null;
+                }
+                
+            }
+
+            while (hasRecords) {
+                // console.log(indexCount);
+            
+                const payloadVisitor = {
+                    personType: 2,
+                    index: recordsCount,
+                    length: 20,
+                    order: 0
+                };
+
+                console.log("this is triggered")
+            
+                const devicesRecordSync = await window.api.getAllDevices();
+            
+                // Flag to track if any device has more data
+                let recordsFound = false;
+            
+                // Use for...of to handle asynchronous fetching properly
+                for (const device of devicesRecordSync) {
+                    const dataRecords = await FetchRecordsFromDevice(device, payloadVisitor);
+                    console.log(device.device_ip)
+                    if (dataRecords && dataRecords.length > 0) {
+                        // console.log(data.length);
+                        // For each user, fetch their image
+                        for (const userRecords of dataRecords) {
+                            // Add the user and the image to the allUser array
+                            allRecords.push({
+                                ...userRecords
+                            });
+                        }
+            
+                        recordsFound = true; // Set flag to true if data is found
+                    }
+                }
+            
+                // If no device returned any data, stop the loop
+                if (!recordsFound) {
+                    hasRecords = false;
+                } else {
+                    recordsCount++; // Increment the index to fetch the next set of data
+                }
+            }
 
             async function convertImageToBase64(url) {
                 const response = await fetch(url);
@@ -61,52 +123,37 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
             }
 
-            const devicesRecordSync = await window.api.getDevice();
+            console.log(allRecords)
 
-            devicesRecordSync.map(async (device) => {
-                const recordURL = `http://${device.device_ip}:8090/cgi-bin/js/record/findList`;
-    
-                const response = await fetch(recordURL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Basic ' + btoa('admin:' + device.communication_password)
-                    },
-                    body: JSON.stringify(payloadVisitor)
-                });
-    
-                if (!response.ok) {
-                    throw new Error(`Error with device ${device.device_ip}`);
+            allRecords.forEach(async (record) => {
+                console.log(record.checkImgUrl)
+                const faceFlagText = record.openDoorFlag === 1 ? 'YES' : 'NO';
+                const stranger = record.strangerFlag === 1 ? 'Stranger' : 'Registered Visitor'
+                await window.api.removeUserRecordRoleBased(2)
+                let base64Image = "";
+                if (record.checkImgUrl) {
+                    base64Image = await convertImageToBase64(record.checkImgUrl)
+                } else {
+                    base64Image = "Using QR"
                 }
-    
-                const result = await response.json();
-                const data = result.data;  // The array of visitor records
-    
-                // For each record in the data array, append a row to the table
-                data.forEach(async (record) => {
-                    console.log(record.checkImgUrl)
-                    const faceFlagText = record.openDoorFlag === 1 ? 'YES' : 'NO';
-                    const stranger = record.strangerFlag === 1 ? 'Stranger' : 'Registered Visitor'
-                    await window.api.removeUserRecordRoleBased(2)
-                    const base64Image = await convertImageToBase64(record.checkImgUrl);
-                    await window.api.insertUserRecord(
-                        record.personName || 'Unknown',
-                        record.cardNo || 'N/A',
-                        record.personSn || 'N/A',
-                        faceFlagText,
-                        stranger,
-                        2,
-                        record.createTime,
-                        base64Image
-                    )
-                    
-                });
+                await window.api.insertGateRecord(
+                    record.personName || 'Unknown',
+                    record.cardNo || 'N/A',
+                    record.personSn || 'N/A',
+                    faceFlagText,
+                    stranger,
+                    2,
+                    record.createTime,
+                    base64Image
+                )
+                
             });
             
+            await window.api.removeOldUsers()
             await window.api.removeOldSyncData()
             // await window.api.removeUserRoleBased(2);
-            await window.api.deleteDeviceManual(2)
-            await window.api.deleteDeviceManual(4)
+            // await window.api.deleteDeviceManual(2)
+            // await window.api.deleteDeviceManual(4)
             // Function to fetch data from a single device
             async function deleteOldUsers(device, payload) {
                 const url = `http://${device.device_ip}:8090/cgi-bin/js/person/findList`;
@@ -354,6 +401,52 @@ document.addEventListener('DOMContentLoaded', async () => {
                 await checkAndInsertUser(record);
                 await checkAndInsertUserEmployee(record);
             });
+
+            function getTimestampForDay(dayOffset) {
+                const date = new Date();
+                date.setHours(0, 0, 0, 0); // Set to midnight
+                date.setDate(date.getDate() + dayOffset); // Offset by specified days
+                return date.getTime(); // Return timestamp in milliseconds
+            }
+            
+            // Calculate startTime (yesterday's midnight) and endTime (today's midnight)
+            const startTime = getTimestampForDay(-4); // Midnight at the start of yesterday
+            const endTime = getTimestampForDay(-1); // Midnight at the start of today
+
+            const deletePayload = {
+                startTime: startTime,
+                endTime: endTime
+            };
+
+            async function deleteRecords(device) {
+                const deleteUrl = `http://${device.device_ip}:8090/cgi-bin/js/record/delete`;
+                
+                try {
+                    const response = await fetch(deleteUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Basic ' + btoa('admin:' + device.communication_password)
+                        },
+                        body: JSON.stringify(deletePayload)
+                    });
+            
+                    if (!response.ok) {
+                        throw new Error("Failed to delete records");
+                    }
+            
+                    const result = await response.json();
+                    console.log("Delete result:", result);
+                } catch (error) {
+                    console.error("Error deleting records:", error);
+                }
+            }
+
+            const allDevicesForDeleteRecords = await window.api.getAllDevices();
+
+            for (const device of allDevicesForDeleteRecords) {
+                  await deleteRecords(device);
+            }
 
             console.log(apiSync.value)
             if ( apiSync.value == "allow") {

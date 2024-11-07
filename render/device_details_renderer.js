@@ -97,13 +97,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 await window.api.updateDevice(device_id, device_ip, device_key, device_name, device_area, device_entry);
                 console.log("Device area inserted successfully.");
                 // Add ?success to the current URL without refreshing the page
-                const newUrl = `${window.location.pathname}?deviceId=${device_id}&success=1`;
-                window.history.replaceState(null, null, newUrl);
+                window.location.reload()
+                showAlert("Device edited successfully", "success");
                 // Optionally refresh the table or provide feedback to the user
             } catch (err) {
                 console.error('Failed to insert device area:', err);
             }
           });
+
+
           
           //setPassword Function
           document.getElementById("edit-comm-pass").addEventListener("submit", async (event) => {
@@ -114,9 +116,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             try {
                 await window.api.updatePass(deviceId, newPass);
                 console.log("Device password updated successfully.");
-                // Add ?success to the current URL without refreshing the page
-                const newUrl = `${window.location.pathname}?deviceId=${deviceId}&success=1`;
-                window.history.replaceState(null, null, newUrl);
                 window.location.reload();
                 // Optionally refresh the table or provide feedback to the user
             } catch (err) {
@@ -143,13 +142,24 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
           })
 
-
-          const urlParams = new URLSearchParams(window.location.search);
-          const successAlert = document.getElementById("successAlert");
+          function showAlert(message, type) {
+            const alertContainer = document.getElementById('alert-container');
+            
+            alertContainer.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            
+            alertContainer.style.display = 'block';
+            
+            // Automatically hide the alert after 3 seconds
+            setTimeout(() => {
+                alertContainer.style.display = 'none';
+            }, 3000);
+        }
         
-          if (urlParams.has('success')) {
-            successAlert.style.display = "block";
-          }
 
           // Now fetch additional details
           const apiUrl = `http://${device.device_ip}:8090/cgi-bin/js/device/get`;

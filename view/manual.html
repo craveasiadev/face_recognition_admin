@@ -30,9 +30,9 @@
     <!-- ===============================================-->
     <!--    Stylesheets-->
     <!-- ===============================================-->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&amp;display=swap" rel="stylesheet">
+    <link href="../asset/vendors/choices/choices.min.css" rel="stylesheet">
+    <link href="../asset/vendors/dhtmlx-gantt/dhtmlxgantt.css" rel="stylesheet">
+    <link href="../asset/vendors/flatpickr/flatpickr.min.css" rel="stylesheet">
     <link href="../asset/vendors/simplebar/simplebar.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
     <link href="../asset/assets/css/theme-rtl.min.css" type="text/css" rel="stylesheet" id="style-rtl">
@@ -54,9 +54,9 @@
         userLinkRTL.setAttribute('disabled', true);
       }
     </script>
-    <!-- <link href="vendors/leaflet/leaflet.css" rel="stylesheet">
-    <link href="vendors/leaflet.markercluster/MarkerCluster.css" rel="stylesheet">
-    <link href="vendors/leaflet.markercluster/MarkerCluster.Default.css" rel="stylesheet"> -->
+    <link href="../asset/vendors/leaflet/leaflet.css" rel="stylesheet">
+    <link href="../asset/vendors/leaflet.markercluster/MarkerCluster.css" rel="stylesheet">
+    <link href="../asset/vendors/leaflet.markercluster/MarkerCluster.Default.css" rel="stylesheet">
   </head>
 
 
@@ -78,25 +78,25 @@
                 </p>
                 <hr class="navbar-vertical-line" />
                 <!-- parent pages-->
-                <div class="nav-item-wrapper"><a class="nav-link label-1" href="dashboard.html" role="button" data-bs-toggle="" aria-expanded="false">
+                <div class="nav-item-wrapper"><a class="nav-link" href="dashboard.html" role="button" data-bs-toggle="" aria-expanded="false">
                     <div class="d-flex align-items-center"><span class="nav-link-icon"><span data-feather="pie-chart"></span></span><span class="nav-link-text-wrapper"><span class="nav-link-text">Dashboard</span></span>
                     </div>
                   </a>
                 </div>
                 <!-- parent pages-->
                 <!-- <div class="nav-item-wrapper"><a class="nav-link" href="qrTest.html" role="button" data-bs-toggle="" aria-expanded="false">
-                  <div class="d-flex align-items-center"><span class="nav-link-icon"><i class="fa-solid fa-qrcode"></i></span><span class="nav-link-text-wrapper"><span class="nav-link-text">QR Test</span></span>
-                  </div>
-                </a>
-              </div> -->
+                    <div class="d-flex align-items-center"><span class="nav-link-icon"><i class="fa-solid fa-qrcode"></i></span><span class="nav-link-text-wrapper"><span class="nav-link-text">QR Test</span></span>
+                    </div>
+                  </a>
+                </div> -->
                 <!-- parent pages-->
-                <div class="nav-item-wrapper"><a class="nav-link dropdown-indicator label-1" href="#personnelManagement" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="personnelManagement">
+                <div class="nav-item-wrapper"><a class="nav-link dropdown-indicator label-1" href="#personnelManagement" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-CRM">
                     <div class="d-flex align-items-center">
                       <div class="dropdown-indicator-icon-wrapper"><span class="fas fa-caret-right dropdown-indicator-icon"></span></div><span class="nav-link-icon"><span data-feather="user"></span></span><span class="nav-link-text">Personnel Management</span>
                     </div>
                   </a>
                   <div class="parent-wrapper label-1">
-                    <ul class="nav collapse parent show" data-bs-parent="#navbarVerticalCollapse" id="personnelManagement">
+                    <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="personnelManagement">
                       <li class="collapsed-nav-item-title d-none">Personnel Management
                       </li>
                       <li class="nav-item"><a class="nav-link" href="employee_management.html">
@@ -105,7 +105,7 @@
                         </a>
                         <!-- more inner pages-->
                       </li>
-                      <li class="nav-item"><a class="nav-link active" href="visitor_management.html">
+                      <li class="nav-item"><a class="nav-link" href="visitor_management.html">
                           <div class="d-flex align-items-center"><span class="nav-link-text">Visitor Management</span>
                           </div>
                         </a>
@@ -200,7 +200,7 @@
                   </ul>
                 </div>
 
-                <div class="nav-item-wrapper"><a class="nav-link" href="manual.html" role="button" data-bs-toggle="" aria-expanded="false">
+                <div class="nav-item-wrapper"><a class="nav-link active" href="manual.html" role="button" data-bs-toggle="" aria-expanded="false">
                   <div class="d-flex align-items-center"><span class="nav-link-icon"><i class="fa-solid fa-book"></i></span><span class="nav-link-text-wrapper"><span class="nav-link-text">User Manual</span></span>
                   </div>
                 </a>
@@ -281,167 +281,189 @@
         </div>
       </nav>
       <div class="content">
-        <div id="alert-container"></div>
-        <div class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis pt-7 border-y">
-          <div data-list='{"valueNames":["product","customer","rating","review","time"],"page":6}'>
-            <div class="row align-items-end justify-content-between pb-5 g-3">
-              <div class="col-auto">
-                <h4>Visitor Management</h4>
-                <p class="text-body-tertiary lh-sm mb-0">Payment received across all channels</p>
-              </div>
-              <div class="col-12 col-md-auto">
-                <div class="row g-2 gy-3">
-                  <div class="col-auto flex-1">
-                    <div class="search-box">
-                      <form class="position-relative">
-                        <input class="form-control search-input search form-control-sm" type="search" placeholder="Search" aria-label="Search" />
-                        <span class="fas fa-search search-box-icon"></span>
-
-                      </form>
-                    </div>
-                  </div>
-                  <div class="col-auto">
-                    <button id="refreshButton" class="btn btn-sm btn-phoenix-secondary bg-body-emphasis bg-body-hover me-2" type="button"><i class="fa-solid fa-arrows-rotate"></i> Refresh</button>
-                    <!-- <button class="btn btn-sm btn-phoenix-secondary bg-body-emphasis bg-body-hover action-btn" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h" data-fa-transform="shrink-2"></span></button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                      <li><a class="dropdown-item" href="#">Action</a></li>
-                      <li><a class="dropdown-item" href="#">Another action</a></li>
-                      <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul> -->
-                    
-                    <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#verticallyCentered"><i class="fa-solid fa-plus"></i> Add Visitor</button>
-                    <div class="modal fade" id="verticallyCentered" tabindex="-1" aria-labelledby="verticallyCenteredModalLabel" aria-hidden="true" style="display: none;">
-                      <div class="modal-dialog modal-dialog-centered modal-lg">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h5 class="modal-title" id="verticallyCenteredModalLabel">Add Visitor</h5>
-                            <button class="btn btn-close p-1" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                          </div>
-                          <div class="modal-body">
-                            <form id="visitorForm">
-                              <div class="row g-3">
-                                <div class="col-md-12">
-                                  <div class="form-floating">
-                                    <input class="form-control" type="text" name="name" id="name" placeholder="Name" />
-                                    <label for="add-property-wizardwizard-name">Name</label>
-                                  </div>
-                                </div>
-                                <!-- <div class="col-md-6">
-                                  <div class="form-floating">
-                                    <input class="form-control" type="text" name="username" id="username" placeholder="Username" />
-                                    <label for="add-property-wizardwizard-name">Username</label>
-                                  </div>
-                                </div> -->
-                                <div class="col-md-6">
-                                  <div class="form-floating">
-                                    <input class="form-control" type="text" name="email" id="email" placeholder="Email" />
-                                    <label for="add-property-wizardwizard-name">Email</label>
-                                  </div>
-                                </div>
-                                <div class="col-md-6">
-                                  <div class="form-floating">
-                                    <input class="form-control" type="text" name="phone" id="phone" placeholder="Phone" />
-                                    <label for="add-property-wizardwizard-name">Phone</label>
-                                  </div>
-                                </div>
-                                <hr>
-                                <div class="col-md-12">
-                                  <div class="">
-                                    <h5 class="mb-2">Image Upload</h5>
-                                    <button type="button" id="useCamera" class="btn btn-outline-primary"><i class="fa-solid fa-camera"></i> Use Camera</button>
-                                    <button type="button" id="useFile" class="btn btn-outline-secondary"><i class="fa-solid fa-file"></i> Upload File</button>
-                                  </div>
-                                </div>
-                                <div class="col-md-12 use-camera" style="display: none;">
-                                  <div class="mb-4">
-                                    <button type="button" id="startCamera" class="btn btn-primary">Start Camera</button>
-                                    <button type="button" id="captureImage" class="btn btn-warning"><i class="fa-solid fa-camera"></i></button>
-                                  </div>
-                                  <video class="img-fluid" id="camera" width="640" height="480" autoplay></video>
-                                  <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
-                                  <img class="img-fluid" id="capturedImage" src="" alt="Captured Image">
-                                  <input type="hidden" id="imageData" name="imageData">
-                                </div>
-                                <div class="col-md-12 use-file" style="display: none;">
-                                  
-                                  <input class="form-control" type="file" name="imageData" id="imageData" placeholder="Phone" accept="image/*" />
-                                </div>
-                                <hr>
-                               
-                                <div class="col-md-6">
-                                  <div class="form-floating">
-                                    <input class="form-control" type="text" name="card" id="card" placeholder="Card Number" />
-                                    <label for="add-property-wizardwizard-name">Card Number</label>
-                                  </div>
-                                </div>
-                                
-                                <div class="col-md-6">
-                                  <div class="form-floating">
-                                    <select class="form-select" id="device_area" aria-label="Default select example">
-                                      
-                                    </select>
-                                    <label class="form-label" for="device_area">Area to Distribute</label>
-                                  </div>
-                                </div>
-                                <div class="col-md-12 text-center">
-                                  <div>
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                  </div>
-                                </div>
-                              </div>
-
-                            </form>
-                          </div>
-                          
-                        </div>
-                      </div>
+        <h2 class="mb-2 lh-sm">Users Manual</h2>
+        <p class="text-body-tertiary lead mb-2">Things you need to know to get started</p>
+        <div class="mt-4">
+          <div class="row g-4">
+            <div class="col-12 col-xl-10 order-1 order-xl-0">
+              <div class="card shadow-none border my-5" data-component-card="data-component-card">
+                <div class="card-header p-4 border-bottom bg-body">
+                  <div class="row g-3 justify-content-between align-items-center">
+                    <div class="col-12 col-md">
+                      <h4 class="text-body mb-0" data-anchor="data-anchor">Device Area</h4>
                     </div>
                   </div>
                 </div>
+                <div class="card-body p-0">
+                 
+                  <div class="p-4 code-to-copy">
+                   
+                    <p>1. First you need to add the device area, for example office, kids zone, premium zone</p>
+                    <p>2. This area is to sort or group the device by area</p>
+                    <p>3. Refer the image below for the steps to add the area</p>
+                    <img class="img-fluid mb-2" src="../img/addArea.PNG" alt="">
+                    <img class="img-fluid mb-2" src="../img/addArea1.PNG" alt="">
+                    <img class="img-fluid mb-2" src="../img/addArea2.PNG" alt="">
+                  </div>
+                </div>
               </div>
-            </div>
-            <div id="visitor-table-container" class="table-responsive mx-n1 px-1 scrollbar">
-              <table class="table fs-9 mb-0 border-top border-translucent">
-                <thead>
-                    <tr class="bg-body-highlight">
-                        <th class="white-space-nowrap fs-9 ps-0 align-middle">
-                            <div class="form-check mb-0 fs-8">
-                                <input class="form-check-input" id="checkbox-bulk-reviews-select" type="checkbox" data-bulk-select='{"body":"table-latest-review-body"}' />
-                            </div>
-                        </th>
-                        <th class="sort white-space-nowrap align-middle border-end border-translucent" scope="col" style="min-width:110px;" data-sort="name">NAME</th>
-                        <th class="sort align-middle border-end border-translucent" scope="col" data-sort="email" style="min-width:100px;">EMAIL</th>
-                        <th class="sort align-middle border-end border-translucent" scope="col" data-sort="phone" style="min-width:100px;">PHONE</th>
-                        <th class="sort align-middle border-end border-translucent" scope="col" data-sort="role" style="min-width:100px;">ROLE</th>
-                        <th class="sort align-middle border-end border-translucent" scope="col" data-sort="image" style="min-width:100px;">IMAGE</th>
-                        <th class="sort align-middle border-end border-translucent" scope="col" data-sort="card" style="min-width:100px;">CARD NUMBER</th>
-                        <th class="sort align-middle border-end border-translucent" scope="col" style="max-width:130px;" data-sort="created">CREATED</th>
-                        <th class="sort text-end pe-0 align-middle border-end border-translucent" scope="col"></th>
-                    </tr>
-                </thead>
-                <tbody class="list" id="table-latest-review-body">
-                    <!-- Data will be inserted here by JavaScript -->
-                    <div class="spinner-border text-success" role="status" id="loading-spinner">
-                      <span class="visually-hidden">Loading...</span>
-                    
-                    </div>
-                </tbody>
-            </table>
-            
-            </div>
-            <div class="row align-items-center py-1">
-              <div class="pagination d-none"></div>
-              <div class="col d-flex fs-9">
-                <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info"></p><a class="fw-semibold" href="#!" data-list-view="*">View all<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a><a class="fw-semibold d-none" href="#!" data-list-view="less">View Less</a>
-              </div>
-              <div class="col-auto d-flex">
 
-                <button class="btn btn-link px-1 me-1" type="button" title="Previous" data-list-pagination="prev"><span class="fas fa-chevron-left me-2"></span>Previous</button>
-                <button class="btn btn-link px-1 ms-1" type="button" title="Next" data-list-pagination="next">Next<span class="fas fa-chevron-right ms-2"></span></button>
+              <div class="card shadow-none border my-5" data-component-card="data-component-card">
+                <div class="card-header p-4 border-bottom bg-body">
+                  <div class="row g-3 justify-content-between align-items-center">
+                    <div class="col-12 col-md">
+                      <h4 class="text-body mb-0" data-anchor="data-anchor">Devices</h4>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body p-0">
+                 
+                  <div class="p-4 code-to-copy">
+                   
+                    <p>1. Next you need to add the device that embedded in the gate.</p>
+                    <p>2. For this one need to configure the ip address as static first on the device, according to your needs.</p>
+                    <p>3. Refer the image below for the steps to add the devices</p>
+                    <img class="img-fluid mb-2" src="../img/addDevice.PNG" alt="">
+                    <img class="img-fluid mb-2" src="../img/addDevice2.PNG" alt="">
+                    <p>- Here you can trigger the gate such as open the gate and restart the device (if neccessary)</p>
+                    <img class="img-fluid mb-2" src="../img/addDevice3.PNG" alt="">
+                  </div>
+                </div>
+              </div>
+
+              <div class="card shadow-none border my-5" data-component-card="data-component-card">
+                <div class="card-header p-4 border-bottom bg-body">
+                  <div class="row g-3 justify-content-between align-items-center">
+                    <div class="col-12 col-md">
+                      <h4 class="text-body mb-0" data-anchor="data-anchor">Settings</h4>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body p-0">
+                 
+                  <div class="p-4 code-to-copy">
+                   
+                    <p>1. In this page, they are already pre made settings value.</p>
+                    <p>2. Change the settings accorindly, based on the server API and need to allow of not the auto sync</p>
+                    <p>3. Refer the image below</p>
+                    <img class="img-fluid mb-2" src="../img/settings1.PNG" alt="">
+                  </div>
+                </div>
+              </div>
+
+              <div class="card shadow-none border my-5" data-component-card="data-component-card">
+                <div class="card-header p-4 border-bottom bg-body">
+                  <div class="row g-3 justify-content-between align-items-center">
+                    <div class="col-12 col-md">
+                      <h4 class="text-body mb-0" data-anchor="data-anchor">Sync</h4>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body p-0">
+                 
+                  <div class="p-4 code-to-copy">
+                   
+                    <p>1. In this page, to view all the sync results and manually sync (if the auto sync is disabled).</p>
+                    <p>2. This will sync all the data from the device into the database, and from database will push the data to the API server (if enabled)</p>
+                    <p>3. Refer the image below</p>
+                    <img class="img-fluid mb-2" src="../img/sync.PNG" alt="">
+                  </div>
+                </div>
+              </div>
+
+              <div class="card shadow-none border my-5" data-component-card="data-component-card">
+                <div class="card-header p-4 border-bottom bg-body">
+                  <div class="row g-3 justify-content-between align-items-center">
+                    <div class="col-12 col-md">
+                      <h4 class="text-body mb-0" data-anchor="data-anchor">User Records</h4>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body p-0">
+                 
+                  <div class="p-4 code-to-copy">
+                   
+                    <p>1. In this page, to view all users (employee, visitor) records in and out.</p>
+                    <p>2. The face will be captured and recorded for future refrence (will remove frm the device after 3 days)</p>
+                    <p>3. Refer the image below</p>
+                    <img class="img-fluid mb-2" src="../img/record1.PNG" alt="">
+                  </div>
+                </div>
+              </div>
+
+              <div class="card shadow-none border my-5" data-component-card="data-component-card">
+                <div class="card-header p-4 border-bottom bg-body">
+                  <div class="row g-3 justify-content-between align-items-center">
+                    <div class="col-12 col-md">
+                      <h4 class="text-body mb-0" data-anchor="data-anchor">Users</h4>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body p-0">
+                 
+                  <div class="p-4 code-to-copy">
+                   
+                    <p>1. In this page, to view all users (employee, visitor).</p>
+                    <p>2. This data is from all the devices upon sync</p>
+                    <p>3. Refer the image below</p>
+                    <img class="img-fluid mb-2" src="../img/user.PNG" alt="">
+                  </div>
+                </div>
+              </div>
+
+              <div class="card shadow-none border my-5" data-component-card="data-component-card">
+                <div class="card-header p-4 border-bottom bg-body">
+                  <div class="row g-3 justify-content-between align-items-center">
+                    <div class="col-12 col-md">
+                      <h4 class="text-body mb-0" data-anchor="data-anchor">Dashboard</h4>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body p-0">
+                 
+                  <div class="p-4 code-to-copy">
+                   
+                    <p>1. In this page, can view all the summary for the users, devices, and traffic records.</p>
+                    <p>2. Refer the image below</p>
+                    <img class="img-fluid mb-2" src="../img/dash1.PNG" alt="">
+                  </div>
+                </div>
+              </div>
+             
+            </div>
+            <div class="col-12 col-xl-2">
+              <div class="position-sticky mt-xl-4" style="top: 80px;">
+                <h5 class="lh-1">On this page </h5>
+                <hr />
+                <ul class="nav nav-vertical flex-column doc-nav" data-doc-nav="data-doc-nav">
+                  <li class="nav-item"> <a class="nav-link" href="#device-area">Device Area</a>
+                  </li>
+                  <li class="nav-item"> <a class="nav-link" href="#devices">Devices</a>
+                  </li>
+                  <li class="nav-item"> <a class="nav-link" href="#settings">Settings</a>
+                  </li>
+                  <li class="nav-item"> <a class="nav-link" href="#sync">Sync</a>
+                  </li>
+                  <li class="nav-item"> <a class="nav-link" href="#user-records">User Records</a>
+                  </li>
+                  <li class="nav-item"> <a class="nav-link" href="#users">Users</a>
+                  </li>
+                  <li class="nav-item"> <a class="nav-link" href="#users">Dashboard</a>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
         </div>
+        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
+          <div class="toast align-items-center text-white bg-dark border-0" id="icon-copied-toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex" data-bs-theme="dark">
+              <div class="toast-body p-3"></div>
+              <button class="btn-close me-2 m-auto" type="button" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+          </div>
+        </div>
+        
       </div>
       
     </main>
@@ -579,84 +601,15 @@
     <script src="../asset/vendors/is/is.min.js"></script>
     <script src="../asset/vendors/fontawesome/all.min.js"></script>
     <script src="../asset/vendors/lodash/lodash.min.js"></script>
-    <!-- <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script> -->
     <script src="../asset/vendors/list.js/list.min.js"></script>
     <script src="../asset/vendors/feather-icons/feather.min.js"></script>
     <script src="../asset/vendors/dayjs/dayjs.min.js"></script>
-    <script src="../asset/vendors/leaflet/leaflet.js"></script>
-    <script src="../asset/vendors/leaflet.markercluster/leaflet.markercluster.js"></script>
-    <script src="../asset/vendors/leaflet.tilelayer.colorfilter/leaflet-tilelayer-colorfilter.min.js"></script>
     <script src="../asset/assets/js/phoenix.js"></script>
     <script src="../asset/vendors/echarts/echarts.min.js"></script>
     <script src="../asset/assets/js/ecommerce-dashboard.js"></script>
-
-    <!-- RENDER -->
-    <script src="../render/visitor_renderer.js"></script>
-    <script>
-      document.getElementById('refreshButton').addEventListener('click', () => {
-          // Refresh the page
-          window.location.reload();
-      });
-    </script>
-    <script>
-      document.getElementById('startCamera').addEventListener('click', function() {
-          const video = document.getElementById('camera');
-          const canvas = document.getElementById('canvas');
-          const context = canvas.getContext('2d');
-  
-          navigator.mediaDevices.getUserMedia({ video: true })
-              .then(stream => {
-                  video.srcObject = stream;
-              })
-              .catch(err => {
-                  console.error('Error accessing camera: ', err);
-              });
-
-          video.style.display = 'block';
-      });
-  
-      document.getElementById('captureImage').addEventListener('click', function() {
-          const video = document.getElementById('camera');
-          const canvas = document.getElementById('canvas');
-          const context = canvas.getContext('2d');
-          const img = document.getElementById('capturedImage');
-          const imageData = document.getElementById('imageData');
-  
-          context.drawImage(video, 0, 0, canvas.width, canvas.height);
-          img.src = canvas.toDataURL('image/png');
-          img.style.display = 'block';
-          imageData.value = img.src; // Save base64 data URL to hidden input
-  
-          const stream = video.srcObject;
-          if (stream) {
-              const tracks = stream.getTracks();
-              tracks.forEach(track => track.stop());
-              video.srcObject = null;
-          }
-
-          video.style.display = 'none';
-      });
-  </script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const useCameraBtn = document.getElementById('useCamera');
-      const useFileBtn = document.getElementById('useFile');
-      const cameraSection = document.querySelector(".use-camera");
-      const fileSection = document.querySelector(".use-file");
-
-      useCameraBtn.addEventListener('click', () => {
-        cameraSection.style.display = 'block';
-        fileSection.style.display = 'none';
-
-      })
-
-      useFileBtn.addEventListener('click', () => {
-        cameraSection.style.display = 'none';
-        fileSection.style.display = 'block';
-
-      })
-    })
-  </script>
+    <script src="../asset/assets/js/projectmanagement-dashboard.js"></script>
+    <script src="../asset/vendors/dhtmlx-gantt/dhtmlxgantt.js"></script>
+    <script src="../asset/vendors/flatpickr/flatpickr.min.js"></script>
 
   </body>
 

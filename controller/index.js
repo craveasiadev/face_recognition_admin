@@ -14,6 +14,7 @@ require("./userController");
 require("./deviceController");
 require("./settingsController");
 require("./userRecordController");
+require("./gateRecordController");
 const initializeDatabase = require('../models/migrate'); 
 
 // Flag to track if the database has been initialized

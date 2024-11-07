@@ -1,6 +1,7 @@
 
 const createUsersTable = require('./user');
 const createUserRecordTable = require('./user_record');
+const createGateRecordTable = require('./gate_record');
 const { createRoleTable, insertPredefinedRoles } = require('./role');
 const createOrganizationTable = require('./organization');
 const createDeviceAreaTable = require('./device_area');
@@ -19,6 +20,8 @@ const initializeDatabase =  () => {
          createUsersTable();
          console.log('Creating user record table...');
          createUserRecordTable();
+         console.log('Creating gate record table...');
+         createGateRecordTable();
         console.log('Creating device area table...');
          createDeviceAreaTable();
         console.log('Creating device table...');

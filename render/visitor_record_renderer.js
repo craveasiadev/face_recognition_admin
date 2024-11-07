@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     try {
 
-        const userRecord = await window.api.getUserRecordVisitor();
+        const userRecord = await window.api.getGateRecordVisitor();
         console.log(userRecord)
 
         if (userRecord.length > 0) {
@@ -16,6 +16,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                         </div>
                     </td>
                     <td class="align-middle border-end border-translucent">
+                    ${record.checkImgUrl === "Using QR" ? `
+                        <p> Using QR</p>
+                        ` : `
                         <a href="#" data-bs-toggle="modal" data-bs-target="#${record.id}">
                            <img src="data:image/jpeg;base64,${record.checkImgUrl}" alt="Snapshot" width="80" height="80" style="border-radius: 10%" />
                         </a>
@@ -32,6 +35,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             </div>
                           </div>
                         </div>
+                        `}
                       </div>
                     </td>
                     <td class="align-middle border-end border-translucent">${record.personName || 'Unknown'}</td>
@@ -122,6 +126,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                         </div>
                     </td>
                     <td class="align-middle border-end border-translucent">
+                    ${record.checkImgUrl === "Using QR" ? `
+                        <p> Using QR</p>
+                        ` : `
                         <a href="#" data-bs-toggle="modal" data-bs-target="#${record.id}">
                            <img src="data:image/jpeg;base64,${record.checkImgUrl}" alt="Snapshot" width="80" height="80" style="border-radius: 10%" />
                         </a>
@@ -138,6 +145,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             </div>
                           </div>
                         </div>
+                        `}
                       </div>
                     </td>
                     <td class="align-middle border-end border-translucent">${record.personName || 'Unknown'}</td>

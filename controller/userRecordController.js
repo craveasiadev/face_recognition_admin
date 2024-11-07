@@ -3,19 +3,38 @@ const db = require('../models/db');
 
 ipcMain.handle('insert-user-record', (event, data) => {
     const { personName, cardNo, personSn, openDoorFlag, strangerFlag, role, createTime, checkImgUrl } = data;
+
     return new Promise((resolve, reject) => {
-        db.run(`
-            INSERT INTO user_record (personName, cardNo, personSn, openDoorFlag, strangerFlag, role, createTime, checkImgUrl)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        `, [personName, cardNo, personSn, openDoorFlag, strangerFlag, role, createTime, checkImgUrl], (err) => {
+        // Check if the record already exists
+        db.get(`
+            SELECT * FROM user_record
+            WHERE personSn = ? AND createTime = ?
+        `, [personSn, createTime], (err, row) => {
             if (err) {
-                console.error('error inserting device area: ', err)
+                console.error('Error checking for existing record:', err);
+                reject(err);
+            } else if (row) {
+                // Record already exists, so skip insertion
+                console.log(`Record with personSn ${personSn} at ${createTime} already exists.`);
+                resolve();
             } else {
-                resolve()
+                // Record does not exist, so insert it
+                db.run(`
+                    INSERT INTO user_record (personName, cardNo, personSn, openDoorFlag, strangerFlag, role, createTime, checkImgUrl)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                `, [personName, cardNo, personSn, openDoorFlag, strangerFlag, role, createTime, checkImgUrl], (err) => {
+                    if (err) {
+                        console.error('Error inserting user record:', err);
+                        reject(err);
+                    } else {
+                        resolve();
+                    }
+                });
             }
-        })
-    })
-})
+        });
+    });
+});
+
 
 ipcMain.handle('delete-user-record', (event, userRecordId) => {
     return new Promise((resolve, reject) => {

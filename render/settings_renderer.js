@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const apiUsername = await window.api.getApiUsername();
     const apiPassword = await window.api.getApiPassword();
 
+    console.log(apiUsername.value)
+
     const settingsDetails = document.getElementById('settings-details');
 
     if (!settingsDetails) {
@@ -89,13 +91,13 @@ document.addEventListener('DOMContentLoaded', async () => {
           const apisync = document.getElementById('apisync').value
           const apiUsername = document.getElementById('apiUsername').value
           const apiPassword = document.getElementById('apiPassword').value
-          console.log(autoSync)
+          console.log(apiUsername)
           try {
               await window.api.updateSettings(api);
               await window.api.updateAutoSync(autosync);
               await window.api.updateApiSync(apisync);
               await window.api.updateApiUsername(apiUsername);
-              await window.api.updateAapiPassword(apiPassword);
+              await window.api.updateApiPassword(apiPassword);
               console.log("settings updated successfully.");
 
               // Add ?success to the current URL without refreshing the page

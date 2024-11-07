@@ -21,6 +21,7 @@ contextBridge.exposeInMainWorld('api', {
     //Delete User
     deleteUser: (userId) => ipcRenderer.invoke('delete-user', userId),
     removeUserRoleBased: (roleId) => ipcRenderer.invoke('remove-users-role-based', roleId),
+    removeOldUsers: () => ipcRenderer.invoke('remove-old-users'),
     //Get User by ID
     getUserById: (userId) => ipcRenderer.invoke('get-user-by-id', userId),
     //Get User by Card
@@ -70,6 +71,8 @@ contextBridge.exposeInMainWorld('api', {
     getUsersVisitorRecordSummary: () => ipcRenderer.invoke('get-users-visitor-record-dashboard'),
     getUsersEmployeeRecordSummary: () => ipcRenderer.invoke('get-users-employee-dashboard'),
 
+    insertGateRecord: (personName, cardNo, personSn, openDoorFlag, strangerFlag, role, createTime, checkImgUrl) => ipcRenderer.invoke('insert-gate-record', {personName, cardNo, personSn, openDoorFlag, strangerFlag, role, createTime, checkImgUrl}),
+    getGateRecordVisitor: () => ipcRenderer.invoke('get-gate-record-visitor'),
     //Restart App
     restartApp: () => ipcRenderer.invoke('restartApp'),
 

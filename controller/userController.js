@@ -354,3 +354,19 @@ ipcMain.handle('get-users-visitor-dashboard', (event) => {
         });
     });
 });
+
+
+ipcMain.handle('remove-old-users', (event) => {
+    return new Promise((resolve, reject) => {
+        db.run(`
+            DELETE FROM users 
+            WHERE created_at < datetime('now', '-1 day')
+        `, function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve({ success: true, changes: this.changes });
+            }
+        });
+    });
+});
