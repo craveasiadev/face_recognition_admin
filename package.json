@@ -26,7 +26,7 @@
   },
   "build": {
     "appId": "com.Crave.FCS",
-    "productName": "FCS",
+    "productName": "Qbot",
     "files": [
       "controller/**/*",  
       "models/**/*",     

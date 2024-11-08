@@ -234,11 +234,14 @@ document.addEventListener('click', async (event) => {
 
             if (response.ok) {
                 console.log(`Door opened successfully for device ${deviceIp}`);
+                showAlert(`Door opened successfully for device ${deviceIp}`, "success")
             } else {
                 console.error(`Failed to open the door for device ${deviceIp}`);
+                showAlert(`Failed to open the door for device ${deviceIp}`, "danger")
             }
         } catch (error) {
             console.error(`Error opening the door for device ${deviceIp}:`, error);
+            showAlert(`Failed to open the door for device ${deviceIp}`, "danger")
         }
     }
 });
@@ -262,12 +265,15 @@ document.addEventListener('click', async (event) => {
 
             if (response.ok) {
                 console.log(`restart successfully for device ${deviceIp}`);
+                showAlert(`restart successfully for device ${deviceIp}`, "success")
             } else {
                 console.error(`Failed to restart for device ${deviceIp}`);
+                showAlert(`Failed to restart for device ${deviceIp}`, "danger")
             }
             
         } catch (error) {
             console.error(`Error restart for device ${deviceIp}:`, error);
+            showAlert(`Failed to restart for device ${deviceIp}`, "danger")
         }
     }
 })

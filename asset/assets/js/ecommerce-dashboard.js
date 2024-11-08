@@ -2012,8 +2012,8 @@
   /* -------------------------------------------------------------------------- */
 
   const totalSalesChartInit = async () => {
-    const employeeData =  await window.api.getUsersEmployeeRecordSummary();
-    const visitorData = await window.api.getUsersVisitorRecordSummary();
+    const employeeData =  await window.api.getGateEmployeeRecordSummary();
+    const visitorData = await window.api.getGateVisitorRecordSummary();
     console.log(visitorData)
     // Prepare the data for the chart
     const employeeCounts = employeeData.map(entry => entry.count);

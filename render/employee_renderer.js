@@ -15,18 +15,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                             <input class="form-check-input" type="checkbox" />
                         </div>
                     </td>
-                    <td class="align-middle border-end border-translucent">${user.name}</td>
-                    <td class="align-middle border-end border-translucent">${user.email}</td>
-                    <td class="align-middle border-end border-translucent">${user.phone}</td>
-                    <td class="align-middle border-end border-translucent">${user.role_name}</td>
+                    <td class="align-middle name border-end border-translucent">${user.name}</td>
+                    <td class="align-middle email border-end border-translucent">${user.email}</td>
+                    <td class="align-middle phone border-end border-translucent">${user.phone}</td>
+                    <td class="align-middle role border-end border-translucent">${user.role_name}</td>
                     <td class="align-middle text-center border-end border-translucent">
                     ${user.profile_image === "no image" ? 
                         `<span>No image</span>` : 
                         `<img src="../uploads/${user.profile_image}" alt="${user.name}" 
                         style="width: 110px; height: 110px; object-fit: cover; border-radius: 10%;" />`}
                     </td>
-                    <td class="align-middle border-end border-translucent">${user.card_number}</td>
-                    <td class="align-middle border-end border-translucent">${user.created_at}</td>
+                    <td class="align-middle cardNo border-end border-translucent">${user.card_number}</td>
+                    <td class="align-middle craeted border-end border-translucent">${user.created_at}</td>
                     <td class="align-middle white-space-nowrap text-center">
                         <div class="btn-reveal-trigger position-static">
                             <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h fs-10"></span></button>
@@ -39,6 +39,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </td>
                 </tr>
             `).join('');
+
+            const options = {
+                valueNames: ['name', 'email', 'phone', 'role', 'cardNo', 'created'],
+            };
+            new List('employee-list-container', options);
         } else {
             // Provide a fallback if no users are found
             userTableBody.innerHTML = `

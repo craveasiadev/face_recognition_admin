@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           deviceDetails.innerHTML = `
               <form id="edit-device-details">
                   <h4 class="mb-4">Device Information</h4>
+                  <div id="validate-alert-container"></div>
                   <input type="hidden" id="device_id" value="${device.id}" />
                   <div class="row g-3">
                       <div class="col-md-12">
@@ -71,7 +72,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                       
                       </div>
                   </div>
-                 
+                 <div id="alert-container"></div>
                   <button class="btn btn-primary mt-5 w-100" type="submit">Save</button>
                   <button id="refreshButton" type="button" class="btn btn-sm btn-outline-info w-100 mt-3"><i class="fa-solid fa-arrows-rotate"></i> Refresh</button>
                   
@@ -92,12 +93,38 @@ document.addEventListener('DOMContentLoaded', async () => {
             const device_name = document.getElementById("name").value;
             const device_area = document.getElementById("area").value;
             const device_entry = document.getElementById("entry").value;
+
+            if (device_ip === "") {
+              showValidateAlert("Device IP cannot be empty", "danger");
+              window.scrollTo({
+                top: 0,
+                behavior: 'smooth' // Smooth scrolling
+            });
+              return;
+            }
+
+            if (device_key === "") {
+              showValidateAlert("Device Key cannot be empty", "danger");
+              window.scrollTo({
+                top: 0,
+                behavior: 'smooth' // Smooth scrolling
+            });
+              return;
+            }
+
+            if (device_name === "") {
+              showValidateAlert("Device name cannot be empty", "danger");
+              window.scrollTo({
+                top: 0,
+                behavior: 'smooth' // Smooth scrolling
+            });
+              return;
+            }
           
             try {
                 await window.api.updateDevice(device_id, device_ip, device_key, device_name, device_area, device_entry);
                 console.log("Device area inserted successfully.");
                 // Add ?success to the current URL without refreshing the page
-                window.location.reload()
                 showAlert("Device edited successfully", "success");
                 // Optionally refresh the table or provide feedback to the user
             } catch (err) {
@@ -116,7 +143,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             try {
                 await window.api.updatePass(deviceId, newPass);
                 console.log("Device password updated successfully.");
-                window.location.reload();
+                
                 // Optionally refresh the table or provide feedback to the user
             } catch (err) {
                 console.error('Failed to insert device area:', err);
@@ -157,8 +184,28 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Automatically hide the alert after 3 seconds
             setTimeout(() => {
                 alertContainer.style.display = 'none';
-            }, 3000);
+                window.location.reload();
+            }, 2000);
         }
+
+        function showValidateAlert(message, type) {
+          const alertContainer = document.getElementById('validate-alert-container');
+          
+          alertContainer.innerHTML = `
+              <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                  ${message}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+          `;
+          
+          alertContainer.style.display = 'block';
+          
+          // Automatically hide the alert after 3 seconds
+          setTimeout(() => {
+              alertContainer.style.display = 'none';
+          }, 3000);
+      }
+      
         
 
           // Now fetch additional details

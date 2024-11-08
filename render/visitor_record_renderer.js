@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             <input class="form-check-input" type="checkbox" />
                         </div>
                     </td>
-                    <td class="align-middle border-end border-translucent">
+                    <td class="align-middle image border-end border-translucent">
                     ${record.checkImgUrl === "Using QR" ? `
                         <p> Using QR</p>
                         ` : `
@@ -38,12 +38,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                         `}
                       </div>
                     </td>
-                    <td class="align-middle border-end border-translucent">${record.personName || 'Unknown'}</td>
-                    <td class="align-middle border-end border-translucent">${record.cardNo || 'N/A'}</td>
-                    <td class="align-middle border-end border-translucent">${record.personSn || 'N/A'}</td>
-                    <td class="align-middle border-end border-translucent">${record.openDoorFlag}</td>
-                    <td class="align-middle border-end border-translucent">${record.strangerFlag}</td>
-                    <td class="align-middle border-end border-translucent">${new Date(Math.floor(record.createTime)).toLocaleString()}</td>
+                    <td class="align-middle personName border-end border-translucent">${record.personName || 'Unknown'}</td>
+                    <td class="align-middle cardNo border-end border-translucent">${record.cardNo || 'N/A'}</td>
+                    <td class="align-middle personSn border-end border-translucent">${record.personSn || 'N/A'}</td>
+                    <td class="align-middle openDoor border-end border-translucent">${record.openDoorFlag}</td>
+                    <td class="align-middle stranger border-end border-translucent">${record.strangerFlag}</td>
+                    <td class="align-middle created border-end border-translucent">${new Date(Math.floor(record.createTime)).toLocaleString()}</td>
                     <td class="align-middle white-space-nowrap text-center">
                         <div class="btn-reveal-trigger position-static">
                             <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h fs-10"></span></button>
@@ -54,6 +54,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </td>
                 </tr>
             `)
+
+            const options = {
+                valueNames: ['image', 'personName', 'cardNo', 'personSn', 'openDoor', 'stranger', 'created'],
+                page: 6,
+                pagination: true
+            };
+            new List('visitor-record-list-container', options);
         } else {
             recordTableVisitor.innerHTML = `
                 <tr>

@@ -73,6 +73,8 @@ contextBridge.exposeInMainWorld('api', {
 
     insertGateRecord: (personName, cardNo, personSn, openDoorFlag, strangerFlag, role, createTime, checkImgUrl) => ipcRenderer.invoke('insert-gate-record', {personName, cardNo, personSn, openDoorFlag, strangerFlag, role, createTime, checkImgUrl}),
     getGateRecordVisitor: () => ipcRenderer.invoke('get-gate-record-visitor'),
+    getGateVisitorRecordSummary: () => ipcRenderer.invoke('get-gate-visitor-record-dashboard'),
+    getGateEmployeeRecordSummary: () => ipcRenderer.invoke('get-gate-employee-record-dashboard'),
     //Restart App
     restartApp: () => ipcRenderer.invoke('restartApp'),
 
