@@ -196,7 +196,7 @@ ipcMain.handle('get-sync-record', () => {
 
 ipcMain.handle('remove-sync-data-10-days-ago', () => {
     return new Promise((resolve, reject) => {
-        const tenDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString();
+        const tenDaysAgo = new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString();
         db.run(`DELETE FROM sync_record WHERE created_at < ?`, [tenDaysAgo], function(err) {
             if (err) {
                 console.error('Error deleting old sync records: ', err)

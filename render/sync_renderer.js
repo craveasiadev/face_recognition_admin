@@ -462,7 +462,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                
                 const userData = users.map(user => {
                     
-                    const [namePart, orderIdPart] = user.name.split(' '); // Split by space
+                    const [namePart, orderIdPart] = user.name.includes(' ') ? user.name.split(' ') : [user.name, null]; // Split by space
                 
                     return {
                         role_id: user.role_id,

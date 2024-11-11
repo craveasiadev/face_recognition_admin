@@ -132,7 +132,22 @@ document.addEventListener('DOMContentLoaded', async () => {
                             <a class="dropdown-item restart-device" href="#!" data-device-ip="${device.device_ip}" data-device-pass="${device.communication_password}"><i class="fa-solid fa-power-off"></i> Restart</a>
                             <a class="dropdown-item view-device" href="#!" data-device-id="${device.id}"><i class="fa-solid fa-eye"></i> View</a>
                             <div class="dropdown-divider"></div>
-                            <button type="button" id="deleteDevice" class="dropdown-item text-danger"><i class="fa-solid fa-trash"></i> Remove</button>
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#device${device.id}" id="deleteDevices" class="dropdown-item text-danger"><i class="fa-solid fa-trash"></i> Remove</button>
+                                <div class="modal fade" id="device${device.id}" tabindex="-1" aria-labelledby="verticallyCenteredModalLabel" aria-hidden="true" style="display: none;">
+                                  <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="device${device.id}">Remove</h5>
+                                        <button class="btn btn-close p-1" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                        <p>Confirm remove Device ?</p><br>
+                                        <button type="button" id="deleteDevice" data-device-id="${device.id}" data-bs-dismiss="modal" class="dropdown-item text-danger"><i class="fa-solid fa-trash"></i> Remove</button>
+                                      </div>
+                                      
+                                    </div>
+                                  </div>
+                                </div>
                         </div>
                     </div>
                 </td>
@@ -299,6 +314,32 @@ document.addEventListener('click', async (event) => {
     }
 });
 
+document.addEventListener('click', async (event) => {
+    console.log('Click event detected:', event.target);
+    if (event.target && event.target.id === 'deleteDevice') {
+        const deviceId = event.target.getAttribute('data-device-id');
+        
+        try {
+            await window.api.deleteDevice(deviceId);
+            console.log("Deleted device successfully");
+            showAlert("Deleted device Successfully", "success")
+            refreshTable();
+            // Optionally refresh the device list or remove the row from the table
+        } catch (error) {
+            showAlert("Failed to delete device", "danger")
+            console.error("Failed to delete device:", error);
+        }
+    }
+});
+
+document.addEventListener('click', async (event) => {
+    console.log('Click event detected:', event.target);
+    if (event.target && event.target.id === 'deleteDevices') {
+        
+            refreshTable();
+       
+    }
+});
 
 
 // Function to show alert messages

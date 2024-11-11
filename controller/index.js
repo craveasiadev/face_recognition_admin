@@ -10,6 +10,41 @@ if (!fs.existsSync(imagesDir)) {
     fs.mkdirSync(imagesDir);
 }
 
+async function removeOldUsers() {
+    return await new Promise((resolve, reject) => {
+        db.run(`
+            DELETE FROM users 
+            WHERE created_at < datetime('now', '-1 day')
+        `, function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve({ success: true, changes: this.changes });
+            }
+        });
+    });
+}
+
+removeOldUsers();
+
+async function removeOldUserRecords() {
+    return await new Promise((resolve, reject) => {
+        db.run(`
+            DELETE FROM gate_record 
+            WHERE created_at < datetime('now', '-8 day')
+        `, function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve({ success: true, changes: this.changes });
+            }
+        });
+    });
+}
+
+removeOldUserRecords();
+
+
 require("./userController");
 require("./deviceController");
 require("./settingsController");
@@ -118,6 +153,26 @@ async function insertSyncData(sync) {
 async function autoSyncData() {
     const settings = await new Promise((resolve, reject) => {
         db.get("SELECT * FROM settings WHERE id = 1", (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+
+    const apiUsername = await new Promise((resolve, reject) => {
+        db.get("SELECT * FROM settings WHERE variable = 'api_username'", (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+
+    const apiPassword = await new Promise((resolve, reject) => {
+        db.get("SELECT * FROM settings WHERE variable = 'api_password'", (err, rows) => {
             if (err) {
                 reject(err);
             } else {
@@ -406,7 +461,7 @@ async function autoSyncData() {
         });
 
         //Sync data to laravel API side
-        const token = await loginAndGetToken('shasweendran@craveasia.com', '12345678');
+        const token = await loginAndGetToken(apiUsername.value, apiPassword.value);
         if (!token) {
             console.error('Failed to retrieve token.');
             return;

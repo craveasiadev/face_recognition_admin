@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <td class="align-middle text-center border-end border-translucent">
                     ${user.profile_image === "no image" ? 
                         `<span>No image</span>` : 
-                        `<img src="../uploads/${user.profile_image}" alt="${user.name}" 
+                        `<img src="${user.profile_image}" alt="${user.name}" 
                         style="width: 110px; height: 110px; object-fit: cover; border-radius: 10%;" />`}
                     </td>
                     <td class="align-middle cardNo border-end border-translucent">${user.card_number}</td>
@@ -31,9 +31,23 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <div class="btn-reveal-trigger position-static">
                             <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h fs-10"></span></button>
                             <div class="dropdown-menu dropdown-menu-end py-2">
-                                <a class="dropdown-item view-user" href="#!" data-user-id="${user.id}"><i class="fa-solid fa-eye"></i> View</a>
-                                <div class="dropdown-divider"></div>
-                                <button type="button" id="deleteUser" class="dropdown-item text-danger"><i class="fa-solid fa-trash"></i> Remove</button>
+                                
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#user${user.id}" id="deleteUsers" class="dropdown-item text-danger"><i class="fa-solid fa-trash"></i> Remove</button>
+                                <div class="modal fade" id="user${user.id}" tabindex="-1" aria-labelledby="verticallyCenteredModalLabel" aria-hidden="true" style="display: none;">
+                                  <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="user${user.id}">Remove</h5>
+                                        <button class="btn btn-close p-1" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                        <p>Confirm remove User ?</p><br>
+                                        <button type="button" id="deleteUser" data-user-id="${user.id}" data-bs-dismiss="modal" class="dropdown-item text-danger"><i class="fa-solid fa-trash"></i> Remove</button>
+                                      </div>
+                                      
+                                    </div>
+                                  </div>
+                                </div>
                             </div>
                         </div>
                     </td>
@@ -81,6 +95,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         const area = document.getElementById("device_area").value;
         const username = document.getElementById("name").value;
 
+        if (name === "") {
+            showValidateAlert("Name cannot be empty", "danger");
+            return
+        }
+
+        if (card === "") {
+            showValidateAlert("Card cannot be empty", "danger");
+            return
+        }
+
+        if (area === "") {
+            showValidateAlert("Area cannot be empty", "danger");
+            return
+        }
+
          // Check if image is from the camera (base64) or file upload
         const imageInput = document.getElementById("imageData");
         let image = imageInput.value;
@@ -113,8 +142,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 document.addEventListener('click', async (event) => {
     console.log('Click event detected:', event.target);
     if (event.target && event.target.id === 'deleteUser') {
-        const row = event.target.closest('tr');
-        const userId = row.querySelector('.view-user').getAttribute('data-user-id');
+        const userId = event.target.getAttribute('data-user-id');
         
         try {
             await window.api.deleteUser(userId);
@@ -126,6 +154,15 @@ document.addEventListener('click', async (event) => {
             showAlert("Failed to delete user", "danger")
             console.error("Failed to delete user:", error);
         }
+    }
+});
+
+document.addEventListener('click', async (event) => {
+    console.log('Click event detected:', event.target);
+    if (event.target && event.target.id === 'deleteUsers') {
+        
+            refreshTable();
+       
     }
 });
 
@@ -259,6 +296,24 @@ function showAlert(message, type) {
     }, 3000);
 }
 
+function showValidateAlert(message, type) {
+    const alertContainer = document.getElementById('validate-alert-container');
+    
+    alertContainer.innerHTML = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    `;
+    
+    alertContainer.style.display = 'block';
+    
+    // Automatically hide the alert after 3 seconds
+    setTimeout(() => {
+        alertContainer.style.display = 'none';
+    }, 3000);
+}
+
 async function refreshTable() {
     const userTableBody = document.getElementById('table-latest-review-body');
     
@@ -276,7 +331,11 @@ async function refreshTable() {
                 <td class="align-middle border-end border-translucent">${user.phone}</td>
                 <td class="align-middle border-end border-translucent">${user.role_name}</td>
                 <td class="align-middle text-center border-end border-translucent">
-                    <img src="../uploads/${user.profile_image}" alt="${user.name}" style="width: 110px; height: 110px; object-fit: cover; border-radius: 10%;"/>
+                ${user.profile_image === "no image" ? 
+                    `<span>No image</span>` : 
+                    `<img src="${user.profile_image}" alt="${user.name}" 
+                    style="width: 110px; height: 110px; object-fit: cover; border-radius: 10%;" />`}
+                </td>
                 </td>
                 <td class="align-middle border-end border-translucent">${user.card_number}</td>
                 <td class="align-middle border-end border-translucent">${user.created_at}</td>
@@ -284,9 +343,22 @@ async function refreshTable() {
                     <div class="btn-reveal-trigger position-static">
                         <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h fs-10"></span></button>
                         <div class="dropdown-menu dropdown-menu-end py-2">
-                            <a class="dropdown-item view-user" href="#!" data-user-id="${user.id}"><i class="fa-solid fa-eye"></i> View</a>
-                            <div class="dropdown-divider"></div>
-                            <button type="button" id="deleteUser" class="dropdown-item text-danger"><i class="fa-solid fa-trash"></i> Remove</button>
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#user${user.id}" id="deleteUsers" class="dropdown-item text-danger"><i class="fa-solid fa-trash"></i> Remove</button>
+                                <div class="modal fade" id="user${user.id}" tabindex="-1" aria-labelledby="verticallyCenteredModalLabel" aria-hidden="true" style="display: none;">
+                                  <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="user${user.id}">Remove</h5>
+                                        <button class="btn btn-close p-1" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                        <p>Confirm remove User ?</p><br>
+                                        <button type="button" id="deleteUser" data-user-id="${user.id}" data-bs-dismiss="modal" class="dropdown-item text-danger"><i class="fa-solid fa-trash"></i> Remove</button>
+                                      </div>
+                                      
+                                    </div>
+                                  </div>
+                                </div>
                         </div>
                     </div>
                 </td>

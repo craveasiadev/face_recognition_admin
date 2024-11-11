@@ -44,14 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <td class="align-middle openDoor border-end border-translucent">${record.openDoorFlag}</td>
                     <td class="align-middle stranger border-end border-translucent">${record.strangerFlag}</td>
                     <td class="align-middle created border-end border-translucent">${new Date(Math.floor(record.createTime)).toLocaleString()}</td>
-                    <td class="align-middle white-space-nowrap text-center">
-                        <div class="btn-reveal-trigger position-static">
-                            <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h fs-10"></span></button>
-                            <div class="dropdown-menu dropdown-menu-end py-2">
-                                <button type="button" id="deleteRecord" data-record-id="${record.id}" class="dropdown-item text-danger deleteRecord"><i class="fa-solid fa-trash"></i> Remove</button>
-                            </div>
-                        </div>
-                    </td>
+                    
                 </tr>
             `)
 
@@ -82,13 +75,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             try {
                 await window.api.deleteUserRecord(recordId);
-                console.log("Deleted device successfully");
-                
+                console.log("Deleted record successfully");
                 refreshTable();
                 // Optionally refresh the device list or remove the row from the table
             } catch (error) {
                 
-                console.error("Failed to delete device:", error);
+                console.error("Failed to delete record:", error);
             }
         }
     });
@@ -161,14 +153,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <td class="align-middle border-end border-translucent">${record.openDoorFlag}</td>
                     <td class="align-middle border-end border-translucent">${record.strangerFlag}</td>
                     <td class="align-middle border-end border-translucent">${new Date(Math.floor(record.createTime)).toLocaleString()}</td>
-                    <td class="align-middle white-space-nowrap text-center">
-                        <div class="btn-reveal-trigger position-static">
-                            <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h fs-10"></span></button>
-                            <div class="dropdown-menu dropdown-menu-end py-2">
-                                <button type="button" id="deleteRecord" data-record-id="${record.id}" class="dropdown-item text-danger deleteRecord"><i class="fa-solid fa-trash"></i> Remove</button>
-                            </div>
-                        </div>
-                    </td>
+                    
                 </tr>
             `)
         } else {

@@ -57,7 +57,7 @@ ipcMain.handle('insert-user', (event, data) => {
         db.run(`
             INSERT INTO users (name, username, email, phone, role_id, profile_image, user_sn, card_number)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        `, [name, username, email, phone, role, fileName, sn, card], (err) => {
+        `, [name, username, email, phone, role, filePath, sn, card], (err) => {
             if (err) {
                 console.error('Error inserting user:', err);
                 reject(err);

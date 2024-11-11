@@ -40,14 +40,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <td class="align-middle border-end border-translucent">${record.openDoorFlag}</td>
                     <td class="align-middle border-end border-translucent">${record.strangerFlag}</td>
                     <td class="align-middle border-end border-translucent">${new Date(Math.floor(record.createTime)).toLocaleString()}</td>
-                    <td class="align-middle white-space-nowrap text-center">
-                        <div class="btn-reveal-trigger position-static">
-                            <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h fs-10"></span></button>
-                            <div class="dropdown-menu dropdown-menu-end py-2">
-                                <button type="button" id="deleteRecord" data-record-id="${record.id}" class="dropdown-item text-danger deleteRecord"><i class="fa-solid fa-trash"></i> Remove</button>
-                            </div>
-                        </div>
-                    </td>
+                    
                 </tr>
             `)
         } else {
@@ -146,14 +139,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <td class="align-middle border-end border-translucent">${record.openDoorFlag}</td>
                     <td class="align-middle border-end border-translucent">${record.strangerFlag}</td>
                     <td class="align-middle border-end border-translucent">${new Date(Math.floor(record.createTime)).toLocaleString()}</td>
-                    <td class="align-middle white-space-nowrap text-center">
-                        <div class="btn-reveal-trigger position-static">
-                            <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h fs-10"></span></button>
-                            <div class="dropdown-menu dropdown-menu-end py-2">
-                                <button type="button" id="deleteRecord" data-record-id="${record.id}" class="dropdown-item text-danger deleteRecord"><i class="fa-solid fa-trash"></i> Remove</button>
-                            </div>
-                        </div>
-                    </td>
+                    
                 </tr>
             `)
         } else {
