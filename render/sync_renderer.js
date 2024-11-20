@@ -82,6 +82,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 console.log("this is triggered")
             
                 const devicesRecordSync = await window.api.getAllDevices();
+                const getStore  = await window.api.getStore();
             
                 // Flag to track if any device has more data
                 let recordsFound = false;
@@ -92,7 +93,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     console.log(device.device_ip)
                     const deviceIP = device.device_ip
                     const deviceEntry = device.device_entry
-                    const deviceStore = "N/A"
+                    const deviceStore = getStore.value
                     if (dataRecords && dataRecords.length > 0) {
                         // console.log(data.length);
                         // For each user, fetch their image

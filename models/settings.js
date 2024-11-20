@@ -95,6 +95,19 @@ const insertPredefinedSettings = () => {
                     }
                 });
 
+                db.run(`
+                    INSERT INTO settings (variable, value)
+                    VALUES (?, ?)
+                `, ['store', 'Melaka'], (err) => {
+                    if (err) {
+                        console.error('Error inserting dummy data into settings:', err);
+                        reject(err);
+                    } else {
+                        console.log('Dummy data inserted into settings table.');
+                        resolve();
+                    }
+                });
+
             } else {
                 console.log('Settings table already has data. No need to insert dummy data.');
                 resolve();

@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const apiSync = await window.api.getApiSync();
     const apiUsername = await window.api.getApiUsername();
     const apiPassword = await window.api.getApiPassword();
+    const store = await window.api.getStore();
 
     console.log(apiUsername.value)
 
@@ -72,6 +73,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                           </div>
                       </div>
                   </div>
+                  <div class="row g-3 mb-2">
+                      <div class="col-md-12">
+                          <div class="form-floating">
+                              <input class="form-control" type="text" name="store" id="store" placeholder="Device Key/SN" value="${store.value}" />
+                              <label for="add-property-wizardwizard-name">${store.variable}</label>
+                          </div>
+                      </div>
+                  </div>
                   <button class="btn btn-primary mt-5 w-100" type="submit">Save</button>
                   <button id="refreshButton" type="button" class="btn btn-sm btn-outline-info w-100 mt-3"><i class="fa-solid fa-arrows-rotate"></i> Refresh</button>
                   
@@ -91,6 +100,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           const apisync = document.getElementById('apisync').value
           const apiUsername = document.getElementById('apiUsername').value
           const apiPassword = document.getElementById('apiPassword').value
+          const store = document.getElementById('store').value
           console.log(apiUsername)
           try {
               await window.api.updateSettings(api);
@@ -98,6 +108,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               await window.api.updateApiSync(apisync);
               await window.api.updateApiUsername(apiUsername);
               await window.api.updateApiPassword(apiPassword);
+              await window.api.updateStore(store);
               console.log("settings updated successfully.");
 
               // Add ?success to the current URL without refreshing the page

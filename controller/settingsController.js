@@ -61,6 +61,18 @@ ipcMain.handle('get-api-password', () => {
     });
 });
 
+ipcMain.handle('get-store', () => {
+    return new Promise((resolve, reject) => {
+        db.get("SELECT * FROM settings WHERE variable = 'store'", (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+});
+
 ipcMain.handle('update-settings', (event, updatedSettings) => {
     const { api } = updatedSettings;
     
@@ -150,6 +162,25 @@ ipcMain.handle('update-api-password', (event, updatedApiPassword) => {
         });
     });
 });
+
+ipcMain.handle('update-store', (event, updatedStore) => {
+    const { store } = updatedStore;
+    
+    return new Promise((resolve, reject) => {
+        db.run(`
+            UPDATE settings
+            SET value = ?
+            WHERE variable = 'store'
+        `, [store], function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve({ success: true, changes: this.changes });
+            }
+        });
+    });
+});
+
 
 ipcMain.handle('insert-sync-record-data', (event, data) => {
     const { type, details, status, status_details } = data;
