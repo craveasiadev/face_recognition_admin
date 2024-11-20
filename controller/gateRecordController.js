@@ -2,7 +2,7 @@ const { ipcMain } = require('electron');
 const db = require('../models/db');
 
 ipcMain.handle('insert-gate-record', (event, data) => {
-    const { personName, cardNo, personSn, openDoorFlag, strangerFlag, role, createTime, checkImgUrl } = data;
+    const { personName, cardNo, personSn, openDoorFlag, strangerFlag, role, createTime, checkImgUrl, deviceIp, deviceEntry, deviceStore } = data;
 
     return new Promise((resolve, reject) => {
         // Check if the record already exists
@@ -20,9 +20,9 @@ ipcMain.handle('insert-gate-record', (event, data) => {
             } else {
                 // Record does not exist, so insert it
                 db.run(`
-                    INSERT INTO gate_record (personName, cardNo, personSn, openDoorFlag, strangerFlag, role, createTime, checkImgUrl)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                `, [personName, cardNo, personSn, openDoorFlag, strangerFlag, role, createTime, checkImgUrl], (err) => {
+                    INSERT INTO gate_record (personName, cardNo, personSn, openDoorFlag, strangerFlag, role, createTime, checkImgUrl, device_ip, device_entry, device_store)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                `, [personName, cardNo, personSn, openDoorFlag, strangerFlag, role, createTime, checkImgUrl, deviceIp, deviceEntry, deviceStore], (err) => {
                     if (err) {
                         console.error('Error inserting user record:', err);
                         reject(err);
@@ -38,15 +38,19 @@ ipcMain.handle('insert-gate-record', (event, data) => {
 
 ipcMain.handle('get-gate-record-visitor', () => {
     return new Promise((resolve, reject) => {
-        db.all("SELECT * FROM gate_record where role = 2", (err, rows) => {
-            if (err) {
-                reject(err)
-            } else {
-                resolve(rows)
+        db.all(
+            "SELECT * FROM gate_record WHERE role = 2 ORDER BY createTime DESC", 
+            (err, rows) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(rows);
+                }
             }
-        })
-    })
-})
+        );
+    });
+});
+
 
 ipcMain.handle('get-gate-visitor-record-dashboard', (event) => {
     return new Promise((resolve, reject) => {

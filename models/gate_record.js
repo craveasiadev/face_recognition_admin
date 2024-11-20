@@ -13,6 +13,9 @@ const createGateRecordTable = () => {
                 role TEXT,
                 createTime TEXT,
                 checkImgUrl TEXT,
+                device_ip TEXT,
+                device_entry TEXT,
+                device_store TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )

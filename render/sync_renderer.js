@@ -90,13 +90,19 @@ document.addEventListener('DOMContentLoaded', async () => {
                 for (const device of devicesRecordSync) {
                     const dataRecords = await FetchRecordsFromDevice(device, payloadVisitor);
                     console.log(device.device_ip)
+                    const deviceIP = device.device_ip
+                    const deviceEntry = device.device_entry
+                    const deviceStore = "N/A"
                     if (dataRecords && dataRecords.length > 0) {
                         // console.log(data.length);
                         // For each user, fetch their image
                         for (const userRecords of dataRecords) {
                             // Add the user and the image to the allUser array
                             allRecords.push({
-                                ...userRecords
+                                ...userRecords,
+                                deviceIP,
+                                deviceEntry,
+                                deviceStore
                             });
                         }
             
@@ -144,7 +150,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                     stranger,
                     2,
                     record.createTime,
-                    base64Image
+                    base64Image,
+                    record.deviceIP,
+                    record.deviceEntry,
+                    record.deviceStore
                 )
                 
             });
@@ -543,7 +552,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     };
                 });
                
-                const user_records = await window.api.getUserRecord();
+                const user_records = await window.api.getGateRecordVisitor();
                
                 const user_records_data = user_records.map(record => {
                 
@@ -556,6 +565,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                         role_id: record.role,
                         create_time: record.createTime,
                         image: record.checkImgUrl,
+                        device_ip: record.device_ip,
+                        device_entry: record.device_entry,
+                        device_store: record.device_store
                
                     };
                 });

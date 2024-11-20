@@ -43,15 +43,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <td class="align-middle personSn border-end border-translucent">${record.personSn || 'N/A'}</td>
                     <td class="align-middle openDoor border-end border-translucent">${record.openDoorFlag}</td>
                     <td class="align-middle stranger border-end border-translucent">${record.strangerFlag}</td>
+                    <td class="align-middle ip border-end border-translucent">${record.device_ip}</td>
+                    <td class="align-middle entry border-end border-translucent">${record.device_entry}</td>
+                    <td class="align-middle store border-end border-translucent">${record.device_store}</td>
                     <td class="align-middle created border-end border-translucent">${new Date(Math.floor(record.createTime)).toLocaleString()}</td>
                     
                 </tr>
             `)
 
             const options = {
-                valueNames: ['image', 'personName', 'cardNo', 'personSn', 'openDoor', 'stranger', 'created'],
-                page: 6,
-                pagination: true
+                valueNames: ['image', 'personName', 'cardNo', 'personSn', 'openDoor', 'stranger','ip', 'entry', 'store', 'created'],
             };
             new List('visitor-record-list-container', options);
         } else {
