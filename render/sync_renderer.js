@@ -91,6 +91,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 for (const device of devicesRecordSync) {
                     const dataRecords = await FetchRecordsFromDevice(device, payloadVisitor);
                     console.log(device.device_ip)
+                    const deviceName = device.device_name
+                    const deviceArea = device.area_name
                     const deviceIP = device.device_ip
                     const deviceEntry = device.device_entry
                     const deviceStore = getStore.value
@@ -101,6 +103,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                             // Add the user and the image to the allUser array
                             allRecords.push({
                                 ...userRecords,
+                                deviceName,
+                                deviceArea,
                                 deviceIP,
                                 deviceEntry,
                                 deviceStore
@@ -152,6 +156,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     2,
                     record.createTime,
                     base64Image,
+                    record.deviceName,
+                    record.deviceArea,
                     record.deviceIP,
                     record.deviceEntry,
                     record.deviceStore
@@ -566,6 +572,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                         role_id: record.role,
                         create_time: record.createTime,
                         image: record.checkImgUrl,
+                        device_name: record.device_name,
+                        device_area: record.device_area,
                         device_ip: record.device_ip,
                         device_entry: record.device_entry,
                         device_store: record.device_store

@@ -201,13 +201,15 @@ ipcMain.handle('get-device-by-area', (event, deviceId) => {
 
 ipcMain.handle('get-all-devices', () => {
      // Add this for logging the deviceId
-    return new Promise((resolve, reject) => {
-        db.all(`SELECT * FROM device`, (err, rows) => {
+     return new Promise((resolve, reject) => {
+        db.all(`
+            SELECT device.*, device_area.area_name
+            FROM device
+            JOIN device_area ON device.device_area_id = device_area.id
+        `, (err, rows) => {
             if (err) {
-                console.error("Database error:", err); // Add this for logging errors
                 reject(err);
             } else {
-                console.log("Fetched devices:", rows); // Add this for logging fetched rows
                 resolve(rows);
             }
         });

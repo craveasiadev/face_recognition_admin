@@ -2,7 +2,7 @@ const { ipcMain } = require('electron');
 const db = require('../models/db');
 
 ipcMain.handle('insert-gate-record', (event, data) => {
-    const { personName, cardNo, personSn, openDoorFlag, strangerFlag, role, createTime, checkImgUrl, deviceIp, deviceEntry, deviceStore } = data;
+    const { personName, cardNo, personSn, openDoorFlag, strangerFlag, role, createTime, checkImgUrl, deviceName, deviceArea, deviceIp, deviceEntry, deviceStore } = data;
 
     return new Promise((resolve, reject) => {
         // Check if the record already exists
@@ -20,9 +20,9 @@ ipcMain.handle('insert-gate-record', (event, data) => {
             } else {
                 // Record does not exist, so insert it
                 db.run(`
-                    INSERT INTO gate_record (personName, cardNo, personSn, openDoorFlag, strangerFlag, role, createTime, checkImgUrl, device_ip, device_entry, device_store)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                `, [personName, cardNo, personSn, openDoorFlag, strangerFlag, role, createTime, checkImgUrl, deviceIp, deviceEntry, deviceStore], (err) => {
+                    INSERT INTO gate_record (personName, cardNo, personSn, openDoorFlag, strangerFlag, role, createTime, checkImgUrl, device_name, device_area, device_ip, device_entry, device_store)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                `, [personName, cardNo, personSn, openDoorFlag, strangerFlag, role, createTime, checkImgUrl, deviceName, deviceArea, deviceIp, deviceEntry, deviceStore], (err) => {
                     if (err) {
                         console.error('Error inserting user record:', err);
                         reject(err);

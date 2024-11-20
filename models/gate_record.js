@@ -13,6 +13,8 @@ const createGateRecordTable = () => {
                 role TEXT,
                 createTime TEXT,
                 checkImgUrl TEXT,
+                device_name TEXT,
+                device_area TEXT,
                 device_ip TEXT,
                 device_entry TEXT,
                 device_store TEXT,
