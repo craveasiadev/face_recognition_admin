@@ -71,7 +71,7 @@ function createMainWindow() {
 
 async function getAutoSyncVal() {
     return await new Promise((resolve, reject) => {
-        db.get("SELECT * FROM settings WHERE id = 2", (err, rows) => {
+        db.get("SELECT * FROM settings WHERE variable = 'auto_sync'", (err, rows) => {
             if (err) {
                 reject(err);
             } else {

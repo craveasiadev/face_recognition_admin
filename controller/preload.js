@@ -1,4 +1,5 @@
 const { contextBridge, ipcRenderer, ipcMain } = require('electron');
+const wristbandPrint = require('./wristbandPrint');
 
 contextBridge.exposeInMainWorld('api', {
     
@@ -79,6 +80,7 @@ contextBridge.exposeInMainWorld('api', {
     getGateEmployeeRecordSummary: () => ipcRenderer.invoke('get-gate-employee-record-dashboard'),
     //Restart App
     restartApp: () => ipcRenderer.invoke('restartApp'),
+    generateWristbandPDF: (sn) => wristbandPrint.generateWristbandPDF(sn),
 
     //manual
     deleteDeviceManual: (deviceId) => ipcRenderer.invoke('delete-device-manual', deviceId),

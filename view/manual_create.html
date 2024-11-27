@@ -30,10 +30,10 @@
     <!-- ===============================================-->
     <!--    Stylesheets-->
     <!-- ===============================================-->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&amp;display=swap" rel="stylesheet">
-    <link href="vendors/simplebar/simplebar.min.css" rel="stylesheet">
+    <link href="../asset/vendors/choices/choices.min.css" rel="stylesheet">
+    <link href="../asset/vendors/dhtmlx-gantt/dhtmlxgantt.css" rel="stylesheet">
+    <link href="../asset/vendors/flatpickr/flatpickr.min.css" rel="stylesheet">
+    <link href="../asset/vendors/simplebar/simplebar.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
     <link href="../asset/assets/css/theme-rtl.min.css" type="text/css" rel="stylesheet" id="style-rtl">
     <link href="../asset/assets/css/theme.min.css" type="text/css" rel="stylesheet" id="style-default">
@@ -54,6 +54,9 @@
         userLinkRTL.setAttribute('disabled', true);
       }
     </script>
+    <link href="../asset/vendors/leaflet/leaflet.css" rel="stylesheet">
+    <link href="../asset/vendors/leaflet.markercluster/MarkerCluster.css" rel="stylesheet">
+    <link href="../asset/vendors/leaflet.markercluster/MarkerCluster.Default.css" rel="stylesheet">
   </head>
 
 
@@ -75,22 +78,22 @@
                 </p>
                 <hr class="navbar-vertical-line" />
                 <!-- parent pages-->
-                <div class="nav-item-wrapper"><a class="nav-link label-1" href="dashboard.html" role="button" data-bs-toggle="" aria-expanded="false">
+                <div class="nav-item-wrapper"><a class="nav-link" href="dashboard.html" role="button" data-bs-toggle="" aria-expanded="false">
                     <div class="d-flex align-items-center"><span class="nav-link-icon"><span data-feather="pie-chart"></span></span><span class="nav-link-text-wrapper"><span class="nav-link-text">Dashboard</span></span>
                     </div>
                   </a>
                 </div>
-                <div class="nav-item-wrapper"><a class="nav-link" href="manual_create.html" role="button" data-bs-toggle="" aria-expanded="false">
-                  <div class="d-flex align-items-center"><span class="nav-link-icon"><span data-feather="user-plus"></span></span><span class="nav-link-text-wrapper"><span class="nav-link-text">Manual Create</span></span>
-                  </div>
-                </a>
-              </div>
+                <div class="nav-item-wrapper"><a class="nav-link active" href="manual_create.html" role="button" data-bs-toggle="" aria-expanded="false">
+                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span data-feather="user-plus"></span></span><span class="nav-link-text-wrapper"><span class="nav-link-text">Manual Create</span></span>
+                    </div>
+                  </a>
+                </div>
                 <!-- parent pages-->
                 <!-- <div class="nav-item-wrapper"><a class="nav-link" href="qrTest.html" role="button" data-bs-toggle="" aria-expanded="false">
-                  <div class="d-flex align-items-center"><span class="nav-link-icon"><i class="fa-solid fa-qrcode"></i></span><span class="nav-link-text-wrapper"><span class="nav-link-text">QR Test</span></span>
-                  </div>
-                </a>
-              </div> -->
+                    <div class="d-flex align-items-center"><span class="nav-link-icon"><i class="fa-solid fa-qrcode"></i></span><span class="nav-link-text-wrapper"><span class="nav-link-text">QR Test</span></span>
+                    </div>
+                  </a>
+                </div> -->
                 <!-- parent pages-->
                 <div class="nav-item-wrapper"><a class="nav-link dropdown-indicator label-1" href="#personnelManagement" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-CRM">
                     <div class="d-flex align-items-center">
@@ -148,13 +151,13 @@
                   </ul>
                 </div>
                 <!-- parent pages-->
-                <div class="nav-item-wrapper"><a class="nav-link dropdown-indicator label-1" href="#accessControl" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="accessControl">
+                <div class="nav-item-wrapper"><a class="nav-link dropdown-indicator label-1" href="#accessControl" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-CRM">
                   <div class="d-flex align-items-center">
                     <div class="dropdown-indicator-icon-wrapper"><span class="fas fa-caret-right dropdown-indicator-icon"></span></div><span class="nav-link-icon"><span data-feather="list"></span></span><span class="nav-link-text">Access Control Management</span>
                   </div>
                 </a>
                 <div class="parent-wrapper label-1">
-                  <ul class="nav collapse parent show" data-bs-parent="#navbarVerticalCollapse" id="accessControl">
+                  <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="accessControl">
                     <li class="collapsed-nav-item-title d-none">Access Controll Management
                     </li>
                     <li class="nav-item"><a class="nav-link" href="employee_record.html">
@@ -163,7 +166,7 @@
                       </a>
                       <!-- more inner pages-->
                     </li>
-                    <li class="nav-item"><a class="nav-link active" href="visitor_record.html">
+                    <li class="nav-item"><a class="nav-link" href="visitor_record.html">
                         <div class="d-flex align-items-center"><span class="nav-link-text">Visitor Records</span>
                         </div>
                       </a>
@@ -283,73 +286,46 @@
         </div>
       </nav>
       <div class="content">
+        
         <div class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis pt-7 border-y">
-          <div id="visitor-record-list-container" data-list='{"valueNames":["product","customer","rating","review","time"],"page":6}'>
-            <div class="row align-items-end justify-content-between pb-5 g-3">
+           
+             <div id="validate-alert-container"></div>
+            <form id="manualCreateForm" class="row gy-2 gx-3 align-items-center">
               <div class="col-auto">
-                <h4>Visitor Record</h4>
-                <p class="text-body-tertiary lh-sm mb-0">Payment received across all channels</p>
-              </div>
-              <div class="col-12 col-md-auto">
-                <div class="row g-2 gy-3">
-                  <div class="col-auto flex-1">
-                    <div class="search-box">
-                      <form class="position-relative">
-                        <input class="form-control search-input search form-control-sm" type="search" placeholder="Search" aria-label="Search" />
-                        <span class="fas fa-search search-box-icon"></span>
-
-                      </form>
-                    </div>
-                  </div>
-                  <div class="col-auto">
-                    <button id="refreshButton" class="btn btn-sm btn-phoenix-secondary bg-body-emphasis bg-body-hover me-2" type="button"><i class="fa-solid fa-arrows-rotate"></i> Refresh</button>
-                  </div>
+                <div class="form-floating mb-2">
+                  <input type="number" class="form-control" id="orderDetailID" placeholder="Order detail ID">
+                  <label for="floatingInput">Order detail ID</label>
                 </div>
+                
               </div>
-            </div>
-            <div class="table-responsive mx-n1 px-1 scrollbar">
-              <table class="table fs-9 mb-0 border-top border-translucent">
-                <thead>
-                    <tr class="bg-body-highlight">
-                        <th class="white-space-nowrap fs-9 ps-0 align-middle">
-                            <div class="form-check mb-0 fs-8">
-                                <input class="form-check-input" id="checkbox-bulk-reviews-select" type="checkbox" data-bulk-select='{"body":"table-latest-review-body"}' />
-                            </div>
-                        </th>
-                        <th class="sort align-middle border-end border-translucent" scope="col" style="min-width:110px;" data-sort="product">IMAGE</th>
-                        <th class="sort align-middle border-end border-translucent" scope="col" data-sort="customer" style="min-width:100px;">NAME</th>
-                        <th class="sort align-middle border-end border-translucent" scope="col" data-sort="rating" style="min-width:100px;">CARD NUMBER</th>
-                        <th class="sort align-middle border-end border-translucent" scope="col" style="max-width:100px;" data-sort="review">SN</th>
-                        <th class="sort align-middle border-end border-translucent" scope="col" style="max-width:100px;" data-sort="review">PASS</th>
-                        <th class="sort align-middle border-end border-translucent" scope="col" style="max-width:100px;" data-sort="review">IDENTITY</th>
-                        <th class="sort align-middle border-end border-translucent" scope="col" style="max-width:100px;" data-sort="review">DEVICE IP</th>
-                        <th class="sort align-middle border-end border-translucent" scope="col" style="max-width:100px;" data-sort="review">DEVICE ENTRY</th>
-                        <th class="sort align-middle border-end border-translucent" scope="col" style="max-width:100px;" data-sort="review">DEVICE STORE</th>
-                        <th class="sort align-middle border-end border-translucent" scope="col" style="max-width:100px;" data-sort="review">CREATED</th>
-                    </tr>
-                </thead>
-                <tbody class="list" id="table-latest-review-body-visitor">
-                    <!-- Data will be inserted here by JavaScript -->
-                    <div class="spinner-border text-success" role="status" id="loading-spinner">
-                      <span class="visually-hidden">Loading...</span>
+              <div class="col-auto">
+                <div class="form-floating mb-2">
+                  <input type="number" class="form-control" id="totalUserCreate" placeholder="Total users to create">
+                  <label for="floatingInput">Total users to create</label>
+                </div>
+                
+              </div>
+              <div class="col-auto">
+                <div class="form-floating mb-2">
+                  <select class="form-select" id="deviceArea" aria-label="Floating label select example">
                     
-                    </div>
-                </tbody>
-              </table>
+                  </select>
+                  <label for="floatingSelect">Device Area</label>
+                </div>
+                
+              </div>
+              
+              <div class="col-auto">
+                <button type="submit" id="create-btn" class="btn btn-primary mb-5 mt-5"><span data-feather="user-plus"></span> Create Users</button>
+              </div>
+            </form>
             
-            </div>
-            <div class="row align-items-center py-1">
-              <div class="pagination d-none"></div>
-              <div class="col d-flex fs-9">
-                <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info"></p><a class="fw-semibold" href="#!" data-list-view="*">View all<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a><a class="fw-semibold d-none" href="#!" data-list-view="less">View Less</a>
-              </div>
-              <div class="col-auto d-flex">
-
-                <button class="btn btn-link px-1 me-1" type="button" title="Previous" data-list-pagination="prev"><span class="fas fa-chevron-left me-2"></span>Previous</button>
-                <button class="btn btn-link px-1 ms-1" type="button" title="Next" data-list-pagination="next">Next<span class="fas fa-chevron-right ms-2"></span></button>
-              </div>
-            </div>
-          </div>
+            
+           <div id="create-result" class="p-4">
+            <p>Waiting...</p>
+            
+           </div>
+           
         </div>
       </div>
       
@@ -494,15 +470,10 @@
     <script src="../asset/assets/js/phoenix.js"></script>
     <script src="../asset/vendors/echarts/echarts.min.js"></script>
     <script src="../asset/assets/js/ecommerce-dashboard.js"></script>
-
-    <!-- RENDER -->
-    <script src="../render/visitor_record_renderer.js"></script>
-    <script>
-      document.getElementById('refreshButton').addEventListener('click', () => {
-          // Refresh the page
-          window.location.reload();
-      });
-    </script>
+    <script src="../asset/assets/js/projectmanagement-dashboard.js"></script>
+    <script src="../asset/vendors/dhtmlx-gantt/dhtmlxgantt.js"></script>
+    <script src="../asset/vendors/flatpickr/flatpickr.min.js"></script>
+    <script src="../render/manual_create_renderer.js"></script>
 
   </body>
 

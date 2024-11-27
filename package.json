@@ -22,18 +22,21 @@
   "dependencies": {
     "axios": "^1.7.5",
     "bootstrap": "^5.3.3",
+    "canvas": "^2.11.2",
+    "pdf-lib": "^1.17.1",
+    "qrcode": "^1.5.4",
     "sqlite3": "^5.1.7"
   },
   "build": {
     "appId": "com.Crave.FCS",
     "productName": "Qbot",
     "files": [
-      "controller/**/*",  
-      "models/**/*",     
+      "controller/**/*",
+      "models/**/*",
       "view/**/*",
-      "asset/**/*",  
-      "uploads/**/*", 
-      "render/**/*",          
+      "asset/**/*",
+      "uploads/**/*",
+      "render/**/*",
       "node_modules/**/*",
       "preload.js",
       "data.db",
@@ -41,14 +44,16 @@
     ],
     "extraResources": [
       {
-        "from": "models/",  
-        "to": "models/",    
-        "filter": ["**/*"]
+        "from": "models/",
+        "to": "models/",
+        "filter": [
+          "**/*"
+        ]
       }
     ],
     "win": {
-      "target": "nsis", 
-      "icon": "icon.ico" 
+      "target": "nsis",
+      "icon": "icon.ico"
     }
   }
 }
