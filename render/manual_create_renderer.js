@@ -117,7 +117,7 @@ async function submitForm(name, username, email, phone, role, image, sn, card, a
             mobile: phone,
             acGroupNumber: 0,
             verifyStyle: 0,
-            expiredStyle: 2,
+            expiredType: 0,
             validCount: 1,
             validTimeBegin: Date.now(),
             validTimeEnd: Date.now() + (1000 * 60 * 60 * 24 * 365) // 1-year expiration
