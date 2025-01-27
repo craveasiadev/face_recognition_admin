@@ -158,6 +158,7 @@ async function submitForm(name, username, email, phone, role, image, sn, card, a
         
 
         console.log(payload)
+
         for (const device of devices) {
             try {
                 const deviceUrl = `http://${device.device_ip}:8090/cgi-bin/js/person/create`;
