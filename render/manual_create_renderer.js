@@ -9,9 +9,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         return userSN;
     }    
 
+    let uniqueCounter = 0;
+
     function generateCardNumber() {
-        let cardNumber = Date.now();
-        return cardNumber;
+        const timestamp = Date.now(); 
+        uniqueCounter += 1; // Increment a counter for every call
+        return `${timestamp}${uniqueCounter}`;
     }
 
     document.getElementById("manualCreateForm").addEventListener("submit", async (event) => {
@@ -20,7 +23,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const totalUserCreate = document.getElementById("totalUserCreate").value;
         const orderDetailID = document.getElementById("orderDetailID").value;
         const areaName = document.getElementById("deviceArea").value;
-
+        const ticketTypeF = document.getElementById("ticketType").value
+        
         if (orderDetailID === "") {
             showValidateAlert("Order Detail ID cannot be empty", "danger");
             return
@@ -36,7 +40,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             return
         }
 
+        if (ticketTypeF === "") {
+            showValidateAlert("Type cannot be empty", "danger");
+            return
+        }
+
         const baseName = "User " + orderDetailID;
+
+        console.log(ticketTypeF)
 
         try {
             for (let i = 0; i < totalUserCreate; i++) {
@@ -49,9 +60,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const area = areaName;
                 const username = `${baseName}`;
                 const image = "no image";
+
+                console.log(`Processing card: ${card}`);
     
-                await submitForm(name, username, email, phone, role, image, sn, card, area);
-                await window.api.generateWristbandPDF(card);
+                await (async (currentSn, currentCard) => {
+                    await submitForm(name, username, email, phone, role, image, currentSn, currentCard, area, ticketTypeF);
+                    await window.api.generateWristbandPDF(currentCard);
+                })(sn, card);
             }
             showValidateAlert("Users created successfully!", "success");
         } catch (error) {
@@ -101,7 +116,7 @@ function showValidateAlert(message, type) {
 }
 
 
-async function submitForm(name, username, email, phone, role, image, sn, card, area) {
+async function submitForm(name, username, email, phone, role, image, sn, card, area, ticketTypeF) {
     try {
         await window.api.insertUser(name, username, email, phone, role, image, sn, card);
         console.log("User created successfully.");
@@ -109,20 +124,40 @@ async function submitForm(name, username, email, phone, role, image, sn, card, a
         const devices = await window.api.getDeviceByArea(area);
         console.log("sn:", sn); 
         console.log("cardnumber:", card); 
-        const payload = {
-            type: 1,
-            sn: sn,
-            name: name,
-            cardNo: card,
-            mobile: phone,
-            acGroupNumber: 0,
-            verifyStyle: 0,
-            expiredStyle: 2,
-            validCount: 1,
-            validTimeBegin: Date.now(),
-            validTimeEnd: Date.now() + (1000 * 60 * 60 * 24 * 365) // 1-year expiration
-        };
+        console.log("type:", ticketTypeF); 
+        let payload;
+        if (ticketTypeF == "unlimited") {
+            payload = {
+                type: 1,
+                sn: sn,
+                name: name,
+                cardNo: card,
+                mobile: phone,
+                acGroupNumber: 0,
+                verifyStyle: 0,
+                expiredType: 0,
+                validCount: 1,
+                validTimeBegin: Date.now(),
+                validTimeEnd: Date.now() + (1000 * 60 * 60 * 24 * 365) // 1-year expiration
+            };
+        } else {
+            payload = {
+                type: 1,
+                sn: sn,
+                name: name,
+                cardNo: card,
+                mobile: phone,
+                acGroupNumber: 0,
+                verifyStyle: 0,
+                expiredType: 2,
+                validCount: 1,
+                validTimeBegin: Date.now(),
+                validTimeEnd: Date.now() + (1000 * 60 * 60 * 24 * 365) // 1-year expiration
+            };
+        }
+        
 
+        console.log(payload)
         for (const device of devices) {
             try {
                 const deviceUrl = `http://${device.device_ip}:8090/cgi-bin/js/person/create`;

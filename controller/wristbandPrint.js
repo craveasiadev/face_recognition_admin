@@ -4,38 +4,36 @@ const { PDFDocument } = require('pdf-lib');
 const QRCode = require('qrcode');
 const { exec } = require('child_process');
 
-async function generateWristbandPDF(sn) {
+async function generateWristbandPDF(sn, index) {
     try {
-       
-        const width = 25.4 * 2.83465;  // 25.4mm to points
-        const height = 260 * 2.83465;  // 260mm to points
+        const width = 25.4 * 2.83465; // 25.4mm to points
+        const height = 260 * 2.83465; // 260mm to points
 
         const wristbandFolderPath = 'C://Print';
-        
         if (!fs.existsSync(wristbandFolderPath)) {
             fs.mkdirSync(wristbandFolderPath, { recursive: true });
         }
 
-       
+        // Unique file names
         const filePath1 = path.join(wristbandFolderPath, `${sn}.pdf`);
-        const filePath2 = path.join(wristbandFolderPath, 'toPrint.pdf');
+        const filePath2 = path.join(wristbandFolderPath, `toPrint_${index}.pdf`); // Unique file name
 
+        // Generate and save the unique file
         const pdfDoc1 = await PDFDocument.create();
-        await addQRCodeToPDF(pdfDoc1, sn, width, height); 
+        await addQRCodeToPDF(pdfDoc1, sn, width, height);
         const pdfBytes1 = await pdfDoc1.save();
         fs.writeFileSync(filePath1, pdfBytes1);
 
         const pdfDoc2 = await PDFDocument.create();
-        await addQRCodeToPDF(pdfDoc2, sn, width, height); 
+        await addQRCodeToPDF(pdfDoc2, sn, width, height);
         const pdfBytes2 = await pdfDoc2.save();
         fs.writeFileSync(filePath2, pdfBytes2);
 
         console.log(`Wristband PDF generated at: ${filePath1}`);
         console.log(`Printing PDF generated at: ${filePath2}`);
 
-        console.log(`Printing wristband: ${sn}`);
-
-        runBatchFile();
+        // Print immediately
+        await runBatchFile(filePath2);
 
     } catch (error) {
         console.error('Failed to generate wristband PDF:', error);
@@ -92,21 +90,28 @@ async function addQRCodeToPDF(pdfDoc, sn, width, height) {
     }
 }
 
-function runBatchFile() {
-    const batchFilePath = path.join('C://Print', 'print.bat');
+function runBatchFile(pdfFilePath) {
+    return new Promise((resolve, reject) => {
+        const batchFilePath = path.join('C://Print', 'print.bat');
 
-    exec(`"${batchFilePath}"`, (error, stdout, stderr) => {
-        if (error) {
-            console.error(`Error running batch file: ${error.message}`);
-            return;
-        }
-        if (stderr) {
-            console.error(`Batch file error: ${stderr}`);
-            return;
-        }
-        console.log(`Batch file output: ${stdout}`);
+        // Pass the dynamically generated PDF file to the batch script
+        exec(`"${batchFilePath}" "${pdfFilePath}"`, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`Error running batch file: ${error.message}`);
+                reject(error);
+                return;
+            }
+            if (stderr) {
+                console.error(`Batch file error: ${stderr}`);
+                reject(stderr);
+                return;
+            }
+            console.log(`Batch file output: ${stdout}`);
+            resolve();
+        });
     });
 }
+
 
 module.exports = {
     generateWristbandPDF,

@@ -291,6 +291,18 @@
            
              <div id="validate-alert-container"></div>
             <form id="manualCreateForm" class="row gy-2 gx-3 align-items-center">
+              
+              <div class="col-auto">
+                <div class="form-floating mb-2">
+                  <select class="form-select" id="ticketType" aria-label="Floating label select example">
+                    <option value="">Select Type</option>
+                    <option value="unlimited">Unlimited</option>
+                    <option value="nonUnlimited">Non Unlimited</option>
+                  </select>
+                  <label for="floatingSelect">Type</label>
+                </div>
+                
+              </div>
               <div class="col-auto">
                 <div class="form-floating mb-2">
                   <input type="number" class="form-control" id="orderDetailID" placeholder="Order detail ID">
@@ -474,7 +486,19 @@
     <script src="../asset/vendors/dhtmlx-gantt/dhtmlxgantt.js"></script>
     <script src="../asset/vendors/flatpickr/flatpickr.min.js"></script>
     <script src="../render/manual_create_renderer.js"></script>
-
+    <script>
+      const ticketType = document.getElementById("ticketType")
+      const orderID = document.getElementById("orderDetailID")
+      ticketType.addEventListener("change", () => {
+        if (ticketType.value == "unlimited") {
+          orderID.value = "9999"
+          orderID.readOnly = true
+        } else {
+          orderID.value = ""
+          orderID.readOnly = false
+        }
+      })
+    </script>
   </body>
 
 </html>
