@@ -128,7 +128,7 @@ async function submitForm(name, username, email, phone, role, image, sn, card, a
         let payload;
         if (ticketTypeF == "unlimited") {
             payload = {
-                type: 1,
+                type: 2,
                 sn: sn,
                 name: name,
                 cardNo: card,
@@ -142,7 +142,7 @@ async function submitForm(name, username, email, phone, role, image, sn, card, a
             };
         } else {
             payload = {
-                type: 1,
+                type: 2,
                 sn: sn,
                 name: name,
                 cardNo: card,

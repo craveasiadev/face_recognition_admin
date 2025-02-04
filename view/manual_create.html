@@ -288,7 +288,7 @@
       <div class="content">
         
         <div class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis pt-7 border-y">
-           
+           <h5>Print Ticket</h5>
              <div id="validate-alert-container"></div>
             <form id="manualCreateForm" class="row gy-2 gx-3 align-items-center">
               
@@ -328,7 +328,7 @@
               </div>
               
               <div class="col-auto">
-                <button type="submit" id="create-btn" class="btn btn-primary mb-5 mt-5"><span data-feather="user-plus"></span> Create Users</button>
+                <button type="submit" id="create-btn" class="btn btn-primary mb-5 mt-5"><span data-feather="user-plus"></span> Print</button>
               </div>
             </form>
             
@@ -338,6 +338,23 @@
             
            </div>
            
+        </div>
+
+        <div class="mt-4 mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis pt-7 border-y">
+          <h5>Check Order</h5>
+          <div class="mb-5">
+            <div id="checkOrderDiv">
+              <form id="checkOrderForm">
+                <label for="">Scan or insert the order number below</label>
+                <input class="form-control w-50 mb-2" type="text" name="orderNumber" id="orderNumber">
+                <button class="btn btn-primary" type="submit" id="submitCheckOrder">Check</button>
+              </form>
+              
+            </div>
+            <div id="orderDetailsResult">
+
+            </div>
+          </div>
         </div>
       </div>
       
