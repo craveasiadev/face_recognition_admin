@@ -508,11 +508,11 @@
       const orderID = document.getElementById("orderDetailID")
       ticketType.addEventListener("change", () => {
         if (ticketType.value == "unlimited") {
-          orderID.value = "9999"
+          orderID.value = "0999"
           orderID.readOnly = true
         } else {
-          orderID.value = ""
-          orderID.readOnly = false
+          orderID.value = "0123"
+          orderID.readOnly = true
         }
       })
     </script>

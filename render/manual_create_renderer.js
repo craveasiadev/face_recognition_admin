@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
                 await (async (currentSn, currentCard) => {
                     await submitForm(name, username, email, phone, role, image, currentSn, currentCard, area, ticketTypeF);
-                    await window.api.generateWristbandPDF(currentCard);
+                    await window.api.generateWristbandPDF(currentCard, ticketTypeF);
                 })(sn, card);
             }
             showValidateAlert("Users created successfully!", "success");
@@ -77,6 +77,105 @@ document.addEventListener('DOMContentLoaded', async () => {
         
     
         })
+
+    
+        document.getElementById("checkOrderForm").addEventListener("submit", async function (e) {
+            e.preventDefault(); // Prevent page reload
+        
+            const orderNumber = document.getElementById("orderNumber").value.trim();
+            if (!orderNumber) {
+                alert("Please enter an order number.");
+                return;
+            }
+        
+            try {
+                // Step 1: Get the auth token
+                const loginResponse = await fetch("https://qbot-api.wonderpark.my/api/auth/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        email: "cravedev@craveasia.com",
+                        password: "12345678"
+                    })
+                });
+        
+                const loginData = await loginResponse.json();
+                if (!loginResponse.ok) {
+                    throw new Error(`Login failed: ${loginData.message}`);
+                }
+        
+                const token = loginData.data.token;
+                console.log("Token received:", token);
+        
+                // Step 2: Fetch order details
+                const orderResponse = await fetch(`https://qbot-api.wonderpark.my/api/orders/details/admin?order_number=${orderNumber}`, {
+                    method: "GET",
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+        
+                const orderData = await orderResponse.json();
+                console.log(orderData)
+                if (!orderResponse.ok) {
+                    throw new Error(`Order fetch failed: ${orderData.message}`);
+                }
+        
+                // Step 3: Display order details
+                document.getElementById("orderDetailsResult").innerHTML = `
+                <div class="alert alert-success">
+                    <h5>Order Details</h5>
+                    <p><strong>Order Number:</strong> ${orderData.data.order_number}</p>
+                    <p><strong>Status:</strong> ${orderData.data.status}</p>
+                    <p><strong>Customer:</strong> ${orderData.data.customer[0].first_name} ${orderData.data.customer[0].last_name}</p>
+                </div>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Order Detail ID</th>
+                            <th>Ticket Type</th>
+                            <th>Quantity</th>
+                            <th>Subtotal (RM)</th>
+                            <th>Grand Total (RM)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${orderData.data.order_details.map(detail => `
+                            ${detail.product && detail.product.product_id === 1 ? `
+                            <tr>
+                                <td>${detail.order_detail_id}</td>
+                                <td>
+              ${
+                detail.addon_product.length > 0 
+                  ? detail.addon_product.some(addon => addon.entry_count > 1) 
+                    ? "Unlimited" 
+                    : "Not Unlimited"
+                  : detail.product_variant.length > 0 
+                    ? detail.product_variant.some(variant => variant.entry_count > 1) 
+                      ? "Unlimited" 
+                      : "Not Unlimited"
+                    : detail.product.entry_count > 1 
+                      ? "Unlimited" 
+                      : "Not Unlimited"
+              }
+            </td>
+                                <td>${detail.quantity}</td>
+                                <td>${detail.subtotal}</td>
+                                <td>${detail.grand_total}</td>
+                            </tr>
+                            ` : ''}
+                        `).join("")}
+                    </tbody>
+                </table>
+            `;
+
+        
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById("orderDetailsResult").innerHTML = `
+                    <div class="alert alert-danger">Error: ${error.message}</div>
+                `;
+            }
+        });
+        
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -118,7 +217,7 @@ function showValidateAlert(message, type) {
 
 async function submitForm(name, username, email, phone, role, image, sn, card, area, ticketTypeF) {
     try {
-        await window.api.insertUser(name, username, email, phone, role, image, sn, card);
+        await window.api.insertUserTicket(name, username, email, phone, role, image, sn, card, ticketTypeF);
         console.log("User created successfully.");
 
         const devices = await window.api.getDeviceByArea(area);

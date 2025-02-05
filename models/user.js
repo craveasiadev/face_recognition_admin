@@ -17,6 +17,7 @@ const createUserTable = () => {
                 user_sn TEXT UNIQUE,
                 card_number INTEGER UNIQUE,
                 face_number INTEGER,
+                ticket_type TEXT,
                 order_number TEXT,
                 time_begin TIMESTAMP,
                 time_end TIMESTAMP,

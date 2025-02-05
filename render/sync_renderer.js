@@ -210,7 +210,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             
                     // If there are old users, prepare to delete them
                     if (oldUsers.length > 0) {
-                        const snToDelete = oldUsers.map(user => user.sn); // Extract sn values
+                        const snToDelete = oldUsers
+                        .filter(user => user.type === 2) // Only users with type === 2
+                        .map(user => user.sn); 
+
                         
                         // Prepare the payload
                         const payload = {

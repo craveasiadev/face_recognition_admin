@@ -68,6 +68,62 @@ ipcMain.handle('insert-user', (event, data) => {
     });
 });
 
+ipcMain.handle('insert-user-ticket', (event, data) => {
+    console.log('Inserting user into database:', data);
+    const { name, username, email, phone, role, image, sn, card, ticket } = data;
+
+    // Generate a filename for the image
+    let fileName;
+    let filePath;
+    if (image == "" ) {
+        fileName = "no image";
+        filePath = path.join(imagesDir, fileName);
+    } else {
+        fileName = `${sn}_${Date.now()}.png`;
+        filePath = path.join(imagesDir, fileName);
+    }
+    
+    // Save base64 image data to a file
+    if (image) {
+        let base64Data;
+        if (image.startsWith('data:image/')) {
+            // Log the fact that the image has a header
+            console.log('Image has a base64 header.');
+            base64Data = image.replace(/^data:image\/\w+;base64,/, '');
+        } else {
+            // Log the fact that the image does not have a header
+            console.log('Image is pure base64.');
+            base64Data = image;
+        }
+
+        // Log the first 100 characters of the base64 data for debugging
+        console.log('Base64 image data (first 100 characters):', base64Data.substring(0, 100));
+
+        // Save the base64 image data to the file
+        fs.writeFile(filePath, base64Data, { encoding: 'base64' }, (err) => {
+            if (err) {
+                console.error('Error saving image:', err);
+            } else {
+                console.log('Image saved successfully at:', filePath);
+            }
+        });
+    }
+
+    return new Promise((resolve, reject) => {
+        db.run(`
+            INSERT INTO users (name, username, email, phone, role_id, profile_image, user_sn, card_number, ticket_type)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [name, username, email, phone, role, filePath, sn, card, ticket], (err) => {
+            if (err) {
+                console.error('Error inserting user:', err);
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+});
+
 //delete user
 ipcMain.handle('delete-user', (event, userId) => {
     return new Promise((resolve, reject) => {

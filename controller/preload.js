@@ -19,6 +19,7 @@ contextBridge.exposeInMainWorld('api', {
 
     //Insert User
     insertUser: (name, username, email, phone, role, image, sn, card) => ipcRenderer.invoke('insert-user', { name, username, email, phone, role, image, sn, card }),
+    insertUserTicket: (name, username, email, phone, role, image, sn, card, ticket) => ipcRenderer.invoke('insert-user-ticket', { name, username, email, phone, role, image, sn, card, ticket }),
     //Delete User
     deleteUser: (userId) => ipcRenderer.invoke('delete-user', userId),
     removeUserRoleBased: (roleId) => ipcRenderer.invoke('remove-users-role-based', roleId),
@@ -80,7 +81,7 @@ contextBridge.exposeInMainWorld('api', {
     getGateEmployeeRecordSummary: () => ipcRenderer.invoke('get-gate-employee-record-dashboard'),
     //Restart App
     restartApp: () => ipcRenderer.invoke('restartApp'),
-    generateWristbandPDF: (sn) => wristbandPrint.generateWristbandPDF(sn),
+    generateWristbandPDF: (sn, ticket) => wristbandPrint.generateWristbandPDF(sn, ticket),
 
     //manual
     deleteDeviceManual: (deviceId) => ipcRenderer.invoke('delete-device-manual', deviceId),
